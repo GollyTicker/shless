@@ -29,6 +29,8 @@ object blubb {
     println(t)
     println(t2)
 
+    
+
   }
 
   //val hm = HMap[BiMapIS](23 -> "foo", "bar" -> 13)
