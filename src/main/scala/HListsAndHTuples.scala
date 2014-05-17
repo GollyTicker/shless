@@ -5,6 +5,8 @@
  */
 
 import shapeless._
+import shapeless.HList.hlistOps
+import shapeless.poly._
 object HListsAndHTuples{
 
   val myHlist = 23 :: "foo" :: HNil
@@ -26,13 +28,26 @@ object HListsAndHTuples{
   // Dann darauf z.B. polymorphe funktionen aufrufen.
 
 
+  val ls = 23 :: HNil :: "dsf" :: HNil
 
+  val unflat = (23 :: "foo" :: 54 :: HNil) :: HNil :: (-2 :: true :: 12 ::  HNil) :: HNil
 
+  val blubb = (23 :: "foo" :: HNil) :: HNil :: (true :: HNil) :: HNil
 
+  val flatten = unflat flatMap identity
 
+  object ints extends (Set ~> Option) {
+    def apply[T](s : Set[T]) = s.headOption
+  }
+
+  //val getInts = flatten filter ints
 
   def run() = {
     println(myHlist)
     println(nestedHlist)
+    println(ls)
+    println(unflat)
+    //println(getints)
+    println(f)
   }
 }
