@@ -7,7 +7,7 @@
 import shapeless._
 import shapeless.HList.hlistOps
 import shapeless.poly._
-object HListsAndHTuples{
+object HList{
 
   val myHlist = 23 :: "foo" :: HNil
   // The type is Int :: String :: HNil
@@ -40,14 +40,20 @@ object HListsAndHTuples{
     def apply[T](s : Set[T]) = s.headOption
   }
 
+  object ident extends (Id ~> Id) {
+    def apply[A](x:A) = x
+  }
+
   //val getInts = flatten filter ints
 
   def run() = {
-    println(myHlist)
-    println(nestedHlist)
+    //println(myHlist)
+    //println(nestedHlist)
     println(ls)
-    println(unflat)
+    //println(unflat)
+
+    println("ls map ident:" + ls map ident)
     //println(getints)
-    println(f)
+    //println(f)
   }
 }
