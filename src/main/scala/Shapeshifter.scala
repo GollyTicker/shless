@@ -1,9 +1,9 @@
-
 import shapeless.HNil
 import shapeless.lens
 import shapeless.syntax.singleton._
 import shapeless.record._
 import shapeless.Generic
+import shapeless._
 
 /**
  * Created by sacry on 15/05/14.
@@ -89,8 +89,7 @@ object LenseSyntax {
   // Some lenses over Person/Job ...
   val jobLens = lens[Person] >> 'job
   val jobNameLens = lens[Person] >> 'job >> 'name
-  val salaryLens = lens[Person] >> 'job >> 'salary
-  val hourlyPaymentLens = lens[Person] >> 'job >> 'salary >> 'hourly
+  val salaryLens = lens[Person] >> 'job >> 'salary >> 'hourly
 
   val personGen = Generic[Person]
 
@@ -98,20 +97,20 @@ object LenseSyntax {
     val matze = Person("matze", 26,
       Address("Supermanstr 77", "Hamburg", "22047"),
       Job("Software Engineer", Salary(30)))
+
     // all This because of immutability, just got more money. Whats the deal?
-    val matze_cluttered = Person("matze_cluttered", 26,
+    val matze_cluttered = Person("matze", 26,
       Address("Supermanstr 77", "Hamburg", "22047"),
-      Job("Software Engineer", Salary(30)))
-    println("Matze: " + matze_uncluttered)
-    // to
-    val matze_uncluttered = salaryLens.set(matze)(Salary(40))
+      Job("Software Engineer", Salary(50)))
+    println(s"Matze cluttered: ${matze_cluttered}")
+    println(s"Matze salary cluttered: ${matze_cluttered.job.salary.hourly}")
+
+    val matze_uncluttered = salaryLens.set(matze)(100) // he gets 100, much better!
     println("Matze uncluttered: " + matze_uncluttered) // yeahy!!
-    // basic working with Matze
-    println(nameLens.get(matze))
-    println(postcodeLens.get(matze))
-    println(hourlyPaymentLens.get(matze))
-    println(salaryLens.set(matze)(Salary(100)))
-    println(personGen.to(matze))
-    println(personGen.from(personGen.to(matze)))
+    println("Matze salary uncluttered: " + salaryLens.get(matze_uncluttered))
+
+    // Generics
+//    println("Generic to Matze: " + personGen.to(matze))
+//    println("Generic from Matze: " + personGen.from(personGen.to(matze)))
   }
 }

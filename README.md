@@ -63,7 +63,7 @@ object LenseSyntax {
     val matze_cluttered = Person("matze_cluttered", 26,
       Address("Supermanstr 77", "Hamburg", "22047"),
       Job("Software Engineer", Salary(30)))
-    println("Matze: " + matze_uncluttered)
+    println("Matze cluttered: " + matze_cluttered)
     // to
     val matze_uncluttered = salaryLens.set(matze)(Salary(40))
     println("Matze uncluttered: " + matze_uncluttered) // yeahy!!
