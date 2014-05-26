@@ -95,10 +95,18 @@ object LenseSyntax {
   val personGen = Generic[Person]
 
   def main(args: Array[String]) {
-
     val matze = Person("matze", 26,
       Address("Supermanstr 77", "Hamburg", "22047"),
       Job("Software Engineer", Salary(30)))
+    // all This because of immutability, just got more money. Whats the deal?
+    val matze_cluttered = Person("matze_cluttered", 26,
+      Address("Supermanstr 77", "Hamburg", "22047"),
+      Job("Software Engineer", Salary(30)))
+    println("Matze: " + matze_uncluttered)
+    // to
+    val matze_uncluttered = salaryLens.set(matze)(Salary(40))
+    println("Matze uncluttered: " + matze_uncluttered) // yeahy!!
+    // basic working with Matze
     println(nameLens.get(matze))
     println(postcodeLens.get(matze))
     println(hourlyPaymentLens.get(matze))
