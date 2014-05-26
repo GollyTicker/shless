@@ -44,16 +44,31 @@ object HList{
     def apply[A](x:A) = x
   }
 
+  object size extends Poly1 {
+    implicit def fInt:Case[Int] = at[Int](x => 1)
+    implicit def fString:Case[String] = at[String](_.size)
+    implicit def fList[A](implicit fA:Case.Aux[A,Int]):Case[List[A]] = ??? //at[List[A]](_.map(_.size).sum)
+  }
+
   //val getInts = flatten filter ints
 
   def run() = {
+
+    val withList = 23 :: 24 :: "dvf" :: List("dvf","vfde") :: HNil
+
     //println(myHlist)
     //println(nestedHlist)
-    println(ls)
+    println("ls " + ls)
     //println(unflat)
 
-    println("ls map ident:" + ls map ident)
-    //println(getints)
-    //println(f)
+    println("ls map ident " + ls map ident)
+    //println("ls map ident " + ls map size)
+    println("withList " + withList)
+    //println("withList " + withList map size)
+
+    println(size(23))
+    println(size(24))
+    println(size(List("sdf","sdffe")))
+
   }
 }
