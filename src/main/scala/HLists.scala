@@ -6,6 +6,7 @@
 
 import shapeless._
 import shapeless.poly._
+
 object HLists {
 
   // HLsits (Tuples x Lists = HLists)
@@ -17,8 +18,6 @@ object HLists {
       // reduce and fold
   // UseCase
   // Extension zu HMaps and HTuples
-
-
 
 
 
@@ -48,6 +47,7 @@ object HLists {
 
   def apply() = {
 
+
     // HLists
 
     // there are Tuples
@@ -56,7 +56,7 @@ object HLists {
     val book = ("Benjamin Pierce", "Types and Programming Languages", Euro(42.23), true)
                 // author           title                             price        availible
 
-    
+
     // and there are lists
     val ingredients = List("strawberry", "cherry", "chocolate", "nut")
 
@@ -65,11 +65,12 @@ object HLists {
     val arthimetics:List[(Int, Int) => Int] = List( (_+_), (_-_), (_*_), (_/_) )
     // variable lengths, but same type
 
-    // shapeless combines both
+    // Hlsits combine both
 
     val myHlist =   23  :: "foo"  :: true     :: List('b,'a','r') :: HNil
     //  myHLsit is  Int :: String :: Boolean  :: List[Char]       :: HNil
     println(myHlist)
+
     // List operations
     println(myHlist(0))
     println(myHlist(2))
@@ -80,6 +81,33 @@ object HLists {
     val res = if (myHlist(0) < 26 && myHlist(2)) myHlist(1) else "baz"
     println(res)
 
+    val plus:Int => Int => Int = x => (x + _)
+    val mult:Int => Int => Int = x => (x * _)
+    val myBucket =
+            plus ::
+            mult ::
+            "234" ::
+            List("strawberry", "cherry", "chocolate", "nut") ::
+            HNil
+
+    val doStuff = myBucket(0)
+    println(doStuff(4)(5))
+
+    val divide:List[String] => (Int, String) = ls => { val t = ls.splitAt(2); ( t._1.length, t._2.mkString(":"))
+
+    val f = ???
+    val g = ???
+
+    val pairApply = ???
+
+    val merge = ???
+    val h = ???
+
+    val compositional = divide :: pairApply :: merge :: h :: HNil
+
+    println(compositional)
+
+    // reduce?
 
     println(secondList map onlyInt)
     println(unflat)
