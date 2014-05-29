@@ -11,39 +11,29 @@ object PolyFuncs {
     def apply[A](x:A) = x
   }
 
-  object size extends Poly1 {
-    implicit def fInt:Case[Int] = at[Int](x => 1)
-    implicit def fString:Case[String] = at[String](_.size)
-    // implicit def fList[A](implicit fA:Case.Aux[A,Int]):Case[List[A]] = ??? //at[List[A]](_.map(_.size).sum)
-    // implicit def fList[Int]:Case[List[Int]] = at[List[Int]](_.map(_.size).sum)
+  object reverse extends Poly1 {
+    import Integer.parseInt
+    implicit def revInt               = at[Int]( x => parseInt(x.toString().reverse) )
+
+    implicit def revString            = at[String](_.reverse)
+
+    implicit def revList[A](implicit revA:Case.Aux[A,A])
+                                    = at[List[A]](ls => (ls map(reverse(_)) reverse))
+
+    implicit def revTuple[A, B](implicit revA : Case.Aux[A, A], revB : Case.Aux[B, B])
+                                    = at[(A, B)]{ case (a, b) => (reverse(b), reverse(a))}
   }
-
-
-  object sizeGood extends Poly1 {
-    implicit def caseInt = at[Int](x => 1)
-    implicit def caseString = at[String](_.length)
-    implicit def caseTuple[T, U]
-    (implicit st : Case.Aux[T, Int], su : Case.Aux[U, Int]) =
-      at[(T, U)](t => sizeGood(t._1)+sizeGood(t._2))
-    implicit def caseList[T](implicit st : Case.Aux[T, Int]) = at[List[T]](ls => ls map(sizeGood(_)) sum)
-  }
-
   def apply() = {
     val ls = 23 :: true :: "Hall" :: List(1,3,5,21) :: "Welt!" :: HNil
 
     println("ls: " + ls)
     println("ident: " + ls map ident)
 
-
-    println("size Int: " + size(324))
-    println("size String: " + size("12345"))
-    // println("size List: " + size(List(2,3,5,63)))
-
-
-    println("size Int: " + sizeGood(324))
-    println("size String: " + sizeGood("12345"))
-    println("size Tuple: " + sizeGood((234,"sdfsdf")))
-    println("size List: " + sizeGood(List(2,3,5,63)))
+    println("strLen Int: " + reverse(324))
+    println("strLen String: " + reverse("12345"))
+    println("strLen List: " + reverse(List(2,3,5,63)))
+    println("strLen List: " + reverse(List("2","3","5","63")))
+    println("strLen List: " + reverse(("abedc",123)))
   }
 
 
