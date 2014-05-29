@@ -5,30 +5,30 @@
  */
 
 import shapeless._
-import shapeless.HList.hlistOps
 import shapeless.poly._
-object HList{
+object HLists {
 
-  val myHlist = 23 :: "foo" :: HNil
-  // The type is Int :: String :: HNil
-  // The type encoded the different lists in use.
+  // HLsits (Tuples x Lists = HLists)
+    // HOF examples
+      // filter, map, flatten, take
+      // get, head, tail
+      // lifting functions
+      // actually these are natural transformations
+      // reduce and fold
+  // UseCase
+  // Extension zu HMaps and HTuples
+
+
+
+
 
   val nestedHlist = {
-    /*1st Element*/ (45 :: true :: HNil)               ::
-    /*2nd Element*/ ("Hallo" :: "Welt" :: 'c' :: HNil) ::
-    /*3rd Element*/ Set(1,3,6)                         ::
-    /*4th Element*/ List(true, false)                  ::
-    /*5th Element*/ HNil
+      /*1st Element*/ (45 :: true :: HNil)               ::
+      /*2nd Element*/ ("Hallo" :: "Welt" :: 'c' :: HNil) ::
+      /*3rd Element*/ Set(1,3,6)                         ::
+      /*4th Element*/ List(true, false)                  ::
+      /*5th Element*/ HNil
   }
-
-  // mögliches Demobeispiel
-  // unstrukturierte Daten parsen
-  // Geparste Typen sind unterschiedlich.
-  // auf den speziellesten Typ parsen.
-  // Dann darauf z.B. polymorphe funktionen aufrufen.
-
-
-  val ls = 23 :: HNil :: "dsf" :: HNil
 
   val unflat = (23 :: "foo" :: 54 :: HNil) :: HNil :: (-2 :: true :: 12 ::  HNil) :: HNil
 
@@ -36,39 +36,67 @@ object HList{
 
   val flatten = unflat flatMap identity
 
-  object ints extends (Set ~> Option) {
-    def apply[T](s : Set[T]) = s.headOption
+  val secondList = 23 :: "dvf" :: 24 :: true :: ("Hi", 5) :: 7 :: List("dvf","vfde") :: HNil
+
+  object onlyInt extends Poly1 {
+    implicit def caseInt                = at[Int](x => true)
+    implicit def caseElse[A]            = at[A](x => false)
   }
+
+  case class Euro(pr:Double)
+  case class NatoShip
+
+  def apply() = {
+
+    // HLists
+
+    // there are Tuples
+    val hiFive = ("Hi", 5)
+    // fixed length, variable types
+    val book = ("Benjamin Pierce", "Types and Programming Languages", Euro(42.23), true)
+                // author           title                             price        availible
+
+    
+    // and there are lists
+    val ingredients = List("strawberry", "cherry", "chocolate", "nut")
+
+    val nato_ships_in_this_room:List[NatoShip] = List()
+
+    val arthimetics:List[(Int, Int) => Int] = List( (_+_), (_-_), (_*_), (_/_) )
+    // variable lengths, but same type
+
+    // shapeless combines both
+
+    val myHlist =   23  :: "foo"  :: true     :: List('b,'a','r') :: HNil
+    //  myHLsit is  Int :: String :: Boolean  :: List[Char]       :: HNil
+    println(myHlist)
+    // List operations
+    println(myHlist(0))
+    println(myHlist(2))
+    val after23 = myHlist.tail
+    println(after23)
+
+    // der Typ bleibt erhalten
+    val res = if (myHlist(0) < 26 && myHlist(2)) myHlist(1) else "baz"
+    println(res)
+
+
+    println(secondList map onlyInt)
+    println(unflat)
+
+  }
+
 
   object ident extends (Id ~> Id) {
     def apply[A](x:A) = x
   }
 
-  object size extends Poly1 {
-    implicit def fInt:Case[Int] = at[Int](x => 1)
-    implicit def fString:Case[String] = at[String](_.size)
-    implicit def fList[A](implicit fA:Case.Aux[A,Int]):Case[List[A]] = ??? //at[List[A]](_.map(_.size).sum)
-  }
+  def hof() {
+    val ls = 23 :: true :: "Hall" :: List(1,3,5,21) :: ("Hi",5) :: "Welt!" :: HNil
 
-  //val getInts = flatten filter ints
-
-  def run() = {
-
-    val withList = 23 :: 24 :: "dvf" :: List("dvf","vfde") :: HNil
-
-    //println(myHlist)
-    //println(nestedHlist)
-    println("ls " + ls)
-    //println(unflat)
-
-    println("ls map ident " + ls map ident)
-    //println("ls map ident " + ls map size)
-    println("withList " + withList)
-    //println("withList " + withList map size)
-
-    println(size(23))
-    println(size(24))
-    println(size(List("sdf","sdffe")))
+    println("ls: " + ls)
+    println("ident: " + ls map ident)
+    println("ident: " + ls map identity)
 
   }
 }
