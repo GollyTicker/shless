@@ -1,8 +1,10 @@
 package matthias
 
-import shapeless.HNil
+import shapeless.{syntax, ::, HNil}
 import shapeless.syntax.singleton._
 import shapeless.record._
+import syntax.std.traversable._
+import syntax.zipper._
 
 /**
  * Created by sacry on 30/05/14.
@@ -19,57 +21,39 @@ object SingletionsExample extends App {
 
 object RecordExample extends App {
 
-  val books = List(
-    ("author" ->> "Benjamin Pierce") ::
-      ("title" ->> "Types and Programming Languages") ::
-      ("id" ->> 262162091) ::
-      ("price" ->> 44.11) ::
-      HNil,
-    ("author" ->> "William Fuckspear") ::
-      ("title" ->> "Types and moare Types") ::
-      ("id" ->> 262162091) ::
-      ("price" ->> 70.48) ::
-      HNil,
-    ("author" ->> "Peter Peterson") ::
-      ("title" ->> "Love Type n Stuff - Peace!") ::
-      ("id" ->> 262162090) ::
-      ("price" ->> 100.90) ::
-      HNil
-  )
+  def printRecord(record: shapeless.HList) {
+    for (e <- record.toList)
+      println(e)
+  }
 
-  val languages = List(
-    ("lang" ->> "Scala") ::
-      ("typed" ->> "Static") ::
-      HNil,
-    ("lang" ->> "Haskell") ::
-      ("typed" ->> "Static") ::
-      HNil,
-    ("lang" ->> "Python") ::
-      ("typed" ->> "dynamic") ::
-      HNil
-  )
+  case class Book(id: Int, title: String, author: String, price: Double)
 
-  val stuff = List(
-    ("books" ->> books) ::
-      ("languages" ->> languages) ::
-      HNil
-  )
-
-  val book =
-    ("author" ->> "Benjamin Pierce") ::
-      ("title" ->> "Types and Programming Languages") ::
-      ("id" ->> 262162091) ::
-      ("price" ->> 44.11) ::
+  val books =
+    ("r1" ->> ("id" ->> 262162091 :: "title" ->> "Types and Programming Languages" ::
+      "author" ->> "Benjamin Pierce" :: "price" ->> 44.95 :: HNil)) ::
+      ("r2" ->> ("id" ->> 262162092 :: "title" ->> "Love Type n Stuff - Peace!" ::
+        "author" ->> "Peter Peace" :: "price" ->> 104.11 :: HNil)) ::
+      ("r3" ->> ("id" ->> 262162093 :: "title" ->> "The Tragedy of Scala and Java" ::
+        "author" ->> "William Shakespeare" :: "price" ->> 12.12 :: HNil)) ::
       HNil
 
-  println(book.get("author"))
-  println(books.map(_.get("author")))
-  val r = stuff.map(record =>
-    record.get("books").map(subrec => subrec.get("title"))
-      .zip(
-        record.get("languages").map(subrec => subrec.get("lang"))
-      )
-  ).flatten
-  println(r)
+  println("r2: " + books.get("r2"))
+  println("r1: " + books.get("r1"))
 
+  println("-" * 50)
+
+  val newPrice = books.get("r2").get("price") + 2.0
+  val updateR2 = books.get("r2") + ("price" ->> newPrice)
+  println(updateR2("price"))
+
+  println("-" * 50)
+
+  val extended = books + ("r4" ->> ("id" ->> 262162091 :: "title" ->> "This is quite nice!" ::
+    "author" ->> "Nimrod Nice" :: "price" ->> 11.11 :: HNil))
+  printRecord(extended)
+
+  println("-" * 50)
+  
+  val removeRecord = extended - "r4"
+  printRecord(removeRecord)
 }
