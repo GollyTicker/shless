@@ -1,10 +1,8 @@
 package matthias
 
-import shapeless.{syntax, ::, HNil}
-import shapeless.syntax.singleton._
+import shapeless.{LabelledGeneric, syntax, HNil}
 import shapeless.record._
-import syntax.std.traversable._
-import syntax.zipper._
+import syntax.singleton._
 
 /**
  * Created by sacry on 30/05/14.
@@ -16,8 +14,9 @@ class Singletons_Records {
 }
 
 object SingletionsExample extends App {
-  println("No SingletionsExample yet")
+
 }
+
 
 object RecordExample extends App {
 
@@ -53,7 +52,7 @@ object RecordExample extends App {
   printRecord(extended)
 
   println("-" * 50)
-  
+
   val removeRecord = extended - "r4"
   printRecord(removeRecord)
 }

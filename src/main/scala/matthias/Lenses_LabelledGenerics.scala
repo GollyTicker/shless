@@ -2,6 +2,9 @@ package matthias
 
 import shapeless._
 import shapeless.Generic
+import shapeless.LabelledGeneric
+import shapeless.record._
+import syntax.singleton._
 
 /**
  * Created by sacry on 30/05/14.
@@ -51,5 +54,22 @@ object LensesExample extends App {
 }
 
 object LabelledGenericsExample extends App {
-  println("No LabelledGenericsExample yet")
+
+  case class Book(author: String, title: String, id: Int, price: Double)
+
+  case class ExtendedBook(author: String, title: String, id: Int, price: Double, inPrint: Boolean)
+
+  val bookGen = LabelledGeneric[Book]
+  val bookExtGen = LabelledGeneric[ExtendedBook]
+
+  val tapl = Book("Benjamin Pierce", "Types and Programming Languages", 262162091, 44.11)
+
+  val rec = bookGen.to(tapl)
+
+  println(s"Access the price: ${rec('price)}")
+
+  println(s"Update the price: ${bookGen.from(rec.updateWith('price)(_ + 2.0))}")
+
+  val extBook = bookExtGen.from(rec + ('inPrint ->> true))
+  println(s"Normal to extended: ${extBook}")
 }
