@@ -1,15 +1,14 @@
 package matthias
 
 import shapeless._
-import shapeless.Generic
-import shapeless.LabelledGeneric
-import shapeless.record._
+import record.RecordType
 import syntax.singleton._
+import union._
 
 /**
  * Created by sacry on 30/05/14.
  */
-class Lenses_LabelledGenerics {
+class Lenses_Coproduct {
 
 }
 
@@ -56,24 +55,32 @@ object LensesExample extends App {
   println(s"connect lenses set: ${salaryLens.set(lensesStyle)(100, 50)}")
 }
 
-object LabelledGenericsExample extends App {
+object CoproductExample extends App {
 
-  case class Book(author: String, title: String, id: Int, price: Double)
+  object size extends Poly1 {
+    implicit def caseInt = at[Int](i => (i, i))
 
-  case class ExtendedBook(author: String, title: String, id: Int, price: Double, inPrint: Boolean)
+    implicit def caseString = at[String](s => (s, s.length))
 
-  val bookGen = LabelledGeneric[Book]
-  val bookExtGen = LabelledGeneric[ExtendedBook]
+    implicit def caseBoolean = at[Boolean](b => (b, 1))
+  }
 
-  val tapl = Book("Benjamin Pierce", "Types and Programming Languages", 262162091, 44.11)
+  type ISB = Int :+: String :+: Boolean :+: CNil
+  val str = Coproduct[ISB]("foo")
+  val bool = Coproduct[ISB](true)
 
-  val rec = bookGen.to(tapl)
+  println(s"Has Int? ${str.select[Int]}")
+  println(s"Has String? ${str.select[String]}")
 
-  println(s"Access the price: ${rec('price)}")
+  val strs = str map size
+  println(strs.select[(String, Int)])
 
-  println(s"Update the price: ${bookGen.from(rec.updateWith('price)(_ + 2.0))}")
+  val bools = bool map size
+  println(bools.select[(Boolean, Int)])
 
-  val extBook = bookExtGen.from(rec + ('inPrint ->> true))
-  println(s"Normal to extended: ${extBook}")
-
+  val uSchema = RecordType.like('i ->> 23 :: 's ->> "foo" :: 'b ->> true :: HNil)
+  type U = uSchema.Union
+  val u = Coproduct[U]('s ->> "foo")
+  println(u.get('i))
+  println(u.get('s))
 }

@@ -1,9 +1,8 @@
 package matthias
 
-import shapeless.{LabelledGeneric, syntax, HNil}
+import shapeless.{syntax, HNil}
 import shapeless.record._
 import syntax.singleton._
-import shapeless.HList
 
 /**
  * Created by sacry on 30/05/14.
