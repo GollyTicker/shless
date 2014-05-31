@@ -3,6 +3,7 @@ package matthias
 import shapeless.{LabelledGeneric, syntax, HNil}
 import shapeless.record._
 import syntax.singleton._
+import shapeless.HList
 
 /**
  * Created by sacry on 30/05/14.
@@ -13,46 +14,62 @@ class Singletons_Records {
 
 }
 
-object SingletionsExample extends App {
+object SingletonsExample extends App {
 
 }
 
 
 object RecordExample extends App {
 
-  def printRecord(record: shapeless.HList) {
-    for (e <- record.toList)
+  def printTitle(msg: String) = {
+    println(s"\n${"-" * 10} ${msg} ${"-" * 10}")
+  }
+
+  def printRecord[T](record: List[T]) {
+    for (e <- record)
       println(e)
   }
 
   case class Book(id: Int, title: String, author: String, price: Double)
 
-  val books =
-    ("r1" ->> ("id" ->> 262162091 :: "title" ->> "Types and Programming Languages" ::
-      "author" ->> "Benjamin Pierce" :: "price" ->> 44.95 :: HNil)) ::
-      ("r2" ->> ("id" ->> 262162092 :: "title" ->> "Love Type n Stuff - Peace!" ::
-        "author" ->> "Peter Peace" :: "price" ->> 104.11 :: HNil)) ::
-      ("r3" ->> ("id" ->> 262162093 :: "title" ->> "The Tragedy of Scala and Java" ::
-        "author" ->> "William Shakespeare" :: "price" ->> 12.12 :: HNil)) ::
-      HNil
+  val books = List(
+    "id" ->> 262162091 :: "title" ->> "Types and Programming Languages" ::
+      "author" ->> "Benjamin Pierce" :: "price" ->> 44.95 :: HNil,
+    "id" ->> 262162092 :: "title" ->> "Love Type n Stuff - Peace!" ::
+      "author" ->> "Peter Peace" :: "price" ->> 104.11 :: HNil,
+    "id" ->> 262162093 :: "title" ->> "The Tragedy of Scala and Java" ::
+      "author" ->> "Java Scalaspeare" :: "price" ->> 12.12 :: HNil
+  )
 
-  println("r2: " + books.get("r2"))
-  println("r1: " + books.get("r1"))
+  printTitle("two records")
 
-  println("-" * 50)
+  println("r2: " + books(1))
+  println("r1: " + books(0))
 
-  val newPrice = books.get("r2").get("price") + 2.0
-  val updateR2 = books.get("r2") + ("price" ->> newPrice)
-  println(updateR2("price"))
+  printTitle("update a record")
 
-  println("-" * 50)
+  val newPrice = books(1).get("price") + 2.0
+  val updateR2 = books(1) + ("price" ->> newPrice)
+  println(s"price: ${updateR2("price")}")
 
-  val extended = books + ("r4" ->> ("id" ->> 262162091 :: "title" ->> "This is quite nice!" ::
-    "author" ->> "Nimrod Nice" :: "price" ->> 11.11 :: HNil))
+  printTitle("extend a record")
+
+  val extended = ("id" ->> 262162091 :: "title" ->> "This is quite nice!" ::
+    "author" ->> "Nimrod Nice" :: "price" ->> 11.11 :: HNil) :: books
   printRecord(extended)
 
-  println("-" * 50)
+  printTitle("remove a field from one record")
 
-  val removeRecord = extended - "r4"
-  printRecord(removeRecord)
+  val removeField = extended(0) - "price"
+  println(removeField)
+
+  printTitle("add a field from all records")
+
+  val addFields = extended map (p => p + ("inPrint" ->> true))
+  printRecord(addFields)
+
+  printTitle("remove a field from all records")
+
+  val removeFields = addFields map (p => p - "inPrint")
+  printRecord(removeFields)
 }

@@ -5,6 +5,7 @@ import shapeless.PolyDefns.->
 import record.RecordType
 import syntax.singleton._
 import union._
+import shapeless.Generic
 
 /**
  * Created by sacry on 30/05/14.
@@ -15,29 +16,6 @@ class Generics_Coproduct {
 
 
 object GenericsExample extends App {
-
-  sealed trait Tree[T]
-
-  case class Leaf[T](t: T) extends Tree[T]
-
-  case class Node[T](left: Tree[T], right: Tree[T]) extends Tree[T]
-
-  object inc extends ->((i: Int) => i + 1)
-
-  def inorderTreeMap[T, B](tree: Tree[T])(f: (T => B)): Tree[B] = tree match {
-    case tree: Node[T] => Node(inorderTreeMap(tree.left)(f), inorderTreeMap(tree.right)(f))
-    case tree: Leaf[T] => Leaf(f(tree.t))
-  }
-
-  val tree: Tree[Int] = Node(
-    Node(Leaf(1), Leaf(3)),
-    Node(Leaf(5), Leaf(6))
-  )
-
-  val every = everywhere(inc)(tree)
-  val notOdd = inorderTreeMap(tree)(p => p + 1)
-  println(notOdd)
-  println(every)
 
   case class Address(street: String, city: String, postcode: String)
 
@@ -51,6 +29,10 @@ object GenericsExample extends App {
 
   val another_john = "John" :: "Doe" :: 25 ::
     Address("695 Park Ave", "New York, NY", "10065") :: "Software Engineer" :: HNil
+
+  object inc extends ->((i: Int) => i + 1)
+
+  println(s"everywhere on person: ${everywhere(inc)(john)}")
 
   println(s"HList to Person: ${personGen.from(another_john)}")
   println(s"is Equal: ${personGen.from(another_john) == personGen.from(personGen.to(john))}")

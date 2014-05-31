@@ -33,8 +33,9 @@ object LensesExample extends App {
 
   val jobLens = lens[Person] >> 'job
   val jobNameLens = lens[Person] >> 'job >> 'name
-  val salaryLens = lens[Person] >> 'job >> 'salary >> 'hourly
-  val bonusLens = lens[Person] >> 'job >> 'salary
+  val hourlyLens = lens[Person] >> 'job >> 'salary >> 'hourly
+  val bonusLens = lens[Person] >> 'job >> 'salary >> 'bonus
+  val salaryLens = hourlyLens ~ bonusLens
 
   val john = Person("John", 25,
     Address("695 Park Ave", "New York, NY", "10065"),
@@ -43,14 +44,16 @@ object LensesExample extends App {
   val normal = Person("John", 25,
     Address("695 Park Ave", "New York, NY", "10065"),
     Job("Software Engineer", Salary(50)))
-  println(s"Matze cluttered: ${normal}")
-  println(s"Matze salary cluttered: ${normal.job.salary.hourly}")
+  println(s"normal: ${normal}")
+  println(s"normal salary: ${normal.job.salary.hourly}")
 
-  val lensesStyle = salaryLens.set(john)(100)
-  println(s"Matze uncluttered: ${lensesStyle}")
-  println(s"Matze salary uncluttered: ${salaryLens.get(lensesStyle)}")
-  println(s"Modify salary: ${salaryLens.modify(lensesStyle)(_ + 5)}")
+  val lensesStyle = hourlyLens.set(john)(100)
+  println(s"lenses: ${lensesStyle}")
+  println(s"get salary: ${hourlyLens.get(lensesStyle)}")
+  println(s"Modify salary: ${hourlyLens.modify(lensesStyle)(_ + 5)}")
 
+  println(s"connect lenses get: ${salaryLens.get(lensesStyle)}")
+  println(s"connect lenses set: ${salaryLens.set(lensesStyle)(100, 50)}")
 }
 
 object LabelledGenericsExample extends App {
@@ -72,4 +75,5 @@ object LabelledGenericsExample extends App {
 
   val extBook = bookExtGen.from(rec + ('inPrint ->> true))
   println(s"Normal to extended: ${extBook}")
+
 }
