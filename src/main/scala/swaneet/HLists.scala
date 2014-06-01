@@ -6,21 +6,12 @@
 
 import scala.util.Try
 import shapeless._
-import shapeless.poly._
 
 object HLists {
 
   case class Euro(pr: Double)
 
-  case class NatoShip
-
-  def launchMissiles(x: String) = ()
-
   def apply() = {
-
-
-    // HLists
-
     // there are Tuples
     val hiFive = ("Hi", 5)
     // fixed length, variable types
@@ -29,27 +20,26 @@ object HLists {
 
     // and there are lists
     val ingredients = List("strawberry", "cherry", "chocolate", "nut")
-    val nato_ships_in_this_room: List[NatoShip] = List()
-    val arthimetics: List[(Int, Int) => Int] = List((_ + _), (_ - _), (_ * _), (_ / _))
     // variable lengths, but same type
 
     // Hlsits combine both
     val myHlist = 23 :: "foo" :: true :: List('b, 'a', 'r') :: "BAR" :: HNil
-    //  myHLsit is  Int :: String :: Boolean  :: List[Char]       :: String :: HNil
-    println("myHlist: " + myHlist)
+    //  myHLsit is  Int :: String :: Boolean  :: List[Char]         :: String :: HNil
 
-    // Tuple like access
-    println("myHlist(0): " + myHlist(0))
-    println("myHlist(2): " + myHlist(2))
+    println(s"myHlist: ${myHlist}")
 
-    // list like operations
-    val after23 = myHlist.tail
-    println("myHlist.tail: " + after23)
-    println("myHlist.filter[String]: " + (myHlist.filter[String]))
+    // Arrey like access
+    println(s"myHlist(0): ${myHlist(0)}")
+    println(s"myHlist(2): ${myHlist(2)}")
 
-    // der Typ bleibt erhalten
+    // Tuple like types (the return type is its original type)
     val res = if (myHlist(0) < 26 && myHlist(2)) myHlist(1) else "baz"
-    println("Conditional: " + res)
+    println(s"Conditional: $res")
+
+    // List like operations
+    val after23 = myHlist.tail
+    println(s"myHlist.tail: $after23")
+    println(s"myHlist.filter[String]: ${myHlist.filter[String]}")
 
     // Hlisten sind geeignet um alles dort rein zu tun.
 
@@ -61,12 +51,11 @@ object HLists {
         mult ::
         "234" ::
         List("strawberry", "cherry", "chocolate", "nut") ::
-        Try(launchMissiles("5min")) ::
         HNil
 
     val doStuff = bucket(0)
-    println("doStuff(4)(5): " + doStuff(4)(5))
-    println(bucket(4))
+    println(s"doStuff(4)(5): ${doStuff(4)(5)}")
+    println(s"ingredients: ${bucket(3)}")
 
 
     // Und man kann über Hlisten wandern
@@ -81,27 +70,29 @@ object HLists {
 
     println(s"root Zipper: ${fileSystem.toZipper}")
 
-    println(s"root: ${fileSystem.toZipper.get}")  // der Foldername "/"
+    println(s"root: ${fileSystem.toZipper.get}") // der Foldername "/"
     println(s"root contents: ${fileSystem.toZipper.right.get}") // mit einem Right können wir uns die HList zurückgeben lassen
 
     // mit einem down gehen wir automatisch in das allererste Folder rein
     println(s"swaneet : ${fileSystem.toZipper.right.down.get}")
 
-    println(s"matze contents: ${fileSystem.toZipper
-                                      .right.down // zeigt nun auf den Swaneet Ordner
-                                      .right  // nach rechts zu "Matthias navigieren"
-                                      .down // Ordner betreten. Zeiger zeigt nun auf den Ordnernamen "Matthias"
-                                      .right  // hol dir nun die Contents des Ordners
-                                      .get}")
+    println(s"matze contents: ${
+      fileSystem.toZipper
+        .right.down // zeigt nun auf den Swaneet Ordner
+        .right // nach rechts zu "Matthias navigieren"
+        .down // Ordner betreten. Zeiger zeigt nun auf den Ordnernamen "Matthias"
+        .right // hol dir nun die Contents des Ordners
+        .get
+    }")
 
     // Neue Datei in Swaneet erzeugen.
     println(s"Swaneet verändert: ${
       fileSystemOut.toZipper
-                                      .right.down // zeigt auf Ordner Swaneet
-                                      .down   // betritt Ordndr Swaneet. Zeigt auf Ordnernamen "Swaneet"
-                                      .right  // Ordnerinhalte betreten. Zeigt auf das allersrte Element ("shapeless-präzi.tex")
-                                      .insert("airbnb-plans.txt")  // neue Datei vorne hinzufügen
-                                      .root.reify // zurück zum springen und Änderungen als neue HList zurückgeben
+        .right.down // zeigt auf Ordner Swaneet
+        .down // betritt Ordndr Swaneet. Zeigt auf Ordnernamen "Swaneet"
+        .right // Ordnerinhalte betreten. Zeigt auf das allersrte Element ("shapeless-präzi.tex")
+        .insert("airbnb-plans.txt") // neue Datei vorne hinzufügen
+        .root.reify // zurück zum springen und Änderungen als neue HList zurückgeben
     }")
   }
 
@@ -117,11 +108,29 @@ object HLists {
   val matze =
     "Matze" ::
       ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) ::
-    HNil
+      HNil
 
   val fileSystemOut =
     "/" ::
-    (swaneet :: matze :: "root-password.txt" :: HNil) ::
-    HNil
+      (swaneet :: matze :: "root-password.txt" :: HNil) ::
+      HNil
+
+  /*
+  myHlist: 23 :: foo :: true :: List('b, a, r) :: BAR :: HNil
+  myHlist(0): 23
+  myHlist(2): true
+  Conditional: foo
+  myHlist.tail: foo :: true :: List('b, a, r) :: BAR :: HNil
+  myHlist.filter[String]: foo :: BAR :: HNil
+  doStuff(4)(5): 9
+  ingredients: List(strawberry, cherry, chocolate, nut)
+  FileSystem: / :: Swaneet :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil :: HNil
+  root Zipper: Zipper(HNil,/ :: Swaneet :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil :: HNil,None)
+  root: /
+  root contents: Swaneet :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil
+  swaneet : Swaneet :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil
+  matze contents: shapeless-präzi.keynote :: passwords.txt :: HNil
+  Swaneet verändert: / :: Swaneet :: airbnb-plans.txt :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil :: HNil
+  */
 
 }

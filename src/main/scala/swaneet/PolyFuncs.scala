@@ -12,7 +12,6 @@ object PolyFuncs {
 
   // hier nur ein kleines Beispiel wie man einfacher und verständlicher type-class artige Funktionen implementieren kann
 
-
   object reverse extends Poly1 {
 
     import Integer.parseInt
