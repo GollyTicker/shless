@@ -11,10 +11,42 @@ by Matthias Nitsche and Swaneet Sahoo <br><br>
  5. Generics and Labelled Generics
  6. Lenses and Coproducts
 <br>
-<br>
+
 **Polymorphic Function Values**
 ```scala
-Some(None)
+// Implementation
+object reverse extends Poly1 {
+  import Integer.parseInt
+  implicit def revInt = at[Int](x => parseInt(x.toString().reverse))
+  
+  implicit def revString = at[String](_.reverse)
+
+  implicit def revList[A](implicit revA: Case.Aux[A, A])
+    = at[List[A]](ls => (ls map (reverse(_)) reverse))
+  
+  implicit def revTuple[A, B]
+    (implicit revA: Case.Aux[A, A], revB: Case.Aux[B, B])
+    = at[(A, B)]{ case (a, b) => (reverse(b), reverse(a)) }
+  }
+```
+```scala
+// Beispiele
+scala> reverse(324)
+423
+scala> reverse("12345")
+54321
+scala> reverse(List(2, 3, 5, 63))
+List(36, 5, 3, 2)
+scala> reverse(List("2", "3", "5", "63"))
+List(36, 5, 3, 2)
+scala> reverse( ("abedc", 123) )
+(321,cdeba)
+scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
+41 :: 32 :: fdsfds :: HNil
+
+import shapeless.test.illTyped
+illTyped("reverse(true)")
+illTyped("reverse(Set(1,2,4))")
 ```
 **Heterogenous lists**
 ```scala
