@@ -73,50 +73,44 @@ object HLists {
 
 
     // Beispielshaft hier ein Filesystem
-    type File = String
-    type Folder = (String, HList)
     // EIn Element im FS ist entweder ein File oder ein Folder.
-
-    import shapeless.BasisConstraint._
-    type FileSystem = File :: Folder :: HNil
-    def acceptBasis[L <: HList : Basis[FileSystem]#λ](l : L) = true
 
     val fileSystem = fileSystemOut
 
-    acceptBasis(fileSystem)
-
-    println(fileSystem)
+    println("FileSystem: " + fileSystem)
     // Folder(/)(Folder(Swaneet)(File(shapeless-präzi.tex) :: File(todo.txt) :: File(launchMissiles.hs) :: HNil) :: Folder(Matthias)(File(shapeless-präzi.keynote) :: File(passwords.txt) :: Folder(private)(File(permission.err) :: HNil) :: HNil) :: Folder(system)(File(google-master-plan.secret) :: File(Happy-families-are-all-alike.txt) :: File(Every-unhappy-family-is-unhappy-in-its-own-way.txt) :: HNil) :: HNil)
 
     import syntax.zipper._
 
-    // val z = fileSystem.toZipper
+    println(s"root Zipper: ${fileSystem.toZipper}")
 
-    // println(fsGen.to(fileSystem))
+    println(s"root: ${fileSystem.toZipper.get}")  // der Foldername "/"
+    println(s"root contents: ${fileSystem.toZipper.last}")
 
-    val fs = ("sdf" :: "sdfsdf" :: HNil) :: "asfd" :: HNil
-
-    println(fs)
+    // Neue Datei in Swaneet erzeugen.
+    println(s"swaneet: ${ls}")
   }
-  val fileSystemOut =
-    ("/",
-      "Swaneet" :: "Matze" :: "system" :: HNil
-      )
-  /*Folder("/")(
-    Folder("Swaneet")(
-      File("shapeless-präzi.tex") :: File("todo.txt") :: File("launchMissiles.hs") :: HNil
-    ) ::
-    Folder("Matthias")(
-      File("shapeless-präzi.keynote") :: File("passwords.txt") ::
-        Folder("private")(File("permission.err"):: HNil) :: HNil
-    ) ::
-    Folder("system")(
-      File("google-master-plan.secret") ::
-      File("Happy-families-are-all-alike.txt") ::
-      File("Every-unhappy-family-is-unhappy-in-its-own-way.txt") ::
-      HNil
-    ) ::
-    HNil
-  )*/
 
+  // Alles ist einfach eine HList
+  // Eine Datei: "dateiname.txt" :: HNil
+  // Mehrere Dateien: "dateiname.txt" :: "dateiname2.txt" :: HNil
+  // Ein Folder: "foldername" :: ("dateiname.txt" :: "dateiname2.txt" :: HNil) :: HNil
+
+  def folder(x:String)(ls:HList) = x :: ls :: HNil
+
+
+  val fileSystemOut =
+    folder("/")(
+      folder("Swaneet")(
+        "shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil
+      ) ::
+      folder("Matze")(
+        "shapeless-präzi.keynote" :: "passwords.txt" :: HNil
+      ) ::
+      "Happy-families-are-all-alike.txt" ::
+      "Every-unhappy-family-is-unhappy-in-its-own-way.txt" ::
+      HNil
+    )
+  import syntax.zipper._
+  val ls = fileSystemOut.toZipper.put("sdfsdf")
 }
