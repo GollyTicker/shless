@@ -248,7 +248,7 @@ val newJohn = hourlyLens.set(john)(100)
 hourlyLens.get(newJohn) // hourly payment = 100
 hourlyLens.modify(newJohn)(_ + 5) // hourly payment = 105
 
-val (hourly, bonus) = salaryLens.get(lensesStyle)
-val anotherJohn = salaryLens.set(lensesStyle)(100, 50) 
+val (hourly, bonus) = salaryLens.get(newJohn)
+val anotherJohn = salaryLens.set(newJohn)(100, 50) 
 // anotherJohn with Salary(100, 50)
 ```
