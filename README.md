@@ -4,22 +4,78 @@ by Matthias Nitsche and Swaneet Sahoo <br><br>
 
 **Table of content**
 
- 1. Heterogenous lists, HTuple HMaps
- 2. Polymorphic Function Values
- 3. Singletons and Extensible Records
- 4. Generics and Labelled Generics
- 5. Lenses and Coproducts
+ 1. Polymorphic Function Values
+ 2. Heterogenous lists
+ 3. Singleton Types
+ 4. Extensible Records
+ 5. Generics and Labelled Generics
+ 6. Lenses and Coproducts
 <br>
 <br>
-**Heterogenous lists, HTuple HMaps**
-```scala
-Some(None)
-```
 **Polymorphic Function Values**
 ```scala
 Some(None)
 ```
-**Singletons**
+**Heterogenous lists**
+```scala
+scala> myHlist = 23 :: "foo" :: true :: List('b', 'a', 'r') :: "BAR" :: HNil
+myHLsit: Int :: String :: Boolean :: List[Char] :: String :: HNil
+```
+
+```scala
+// Array like access
+scala> myHlist(0)
+res0: Int = 23
+scala> myHlist(1)
+res0: String = 23
+
+// Tuple like types
+scala> if (myHlist(0) < 26 && myHlist(2)) myHlist(1) else "baz"
+res0: String = foo
+
+// List like operations
+scala> myHlist.tail
+foo :: true :: List(b, a, r) :: BAR :: HNil
+scala> myHlist.filter[String]
+foo :: BAR :: HNil
+```
+```scala
+val swaneet =
+  "Swaneet" ::
+  ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
+  HNil
+
+val matze =
+  "Matze" ::
+  ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) ::
+  HNil
+
+val fileSystemOut =
+  "/" ::
+  (swaneet :: matze :: "root-password.txt" :: HNil) ::
+  HNil
+
+scala> fileSystem.toZipper.right.down.get
+Swaneet ::
+(shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil) ::
+HNil
+
+scala> fileSystemOut.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
+/ ::
+(
+  ( 
+    Swaneet ::
+    (airbnb-plans.txt :: shapeless-präzi.tex ...) ::
+    HNil
+  ) ::
+  (Matze :: (...) :: HNil) ::
+  root-password.txt ::
+  HNil
+) ::
+HNil
+
+```
+**Singleton Types**
 ```scala
 Some(None)
 ```
