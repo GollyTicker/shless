@@ -38,6 +38,41 @@ scala> myHlist.tail
 foo :: true :: List(b, a, r) :: BAR :: HNil
 scala> myHlist.filter[String]
 foo :: BAR :: HNil
+```
+```scala
+val swaneet =
+  "Swaneet" ::
+  ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
+  HNil
+
+val matze =
+  "Matze" ::
+  ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) ::
+  HNil
+
+val fileSystemOut =
+  "/" ::
+  (swaneet :: matze :: "root-password.txt" :: HNil) ::
+  HNil
+
+scala> fileSystem.toZipper.right.down.get
+Swaneet ::
+(shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil) ::
+HNil
+
+scala> fileSystemOut.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
+/ ::
+(
+  ( 
+    Swaneet ::
+    (airbnb-plans.txt :: shapeless-präzi.tex ...) ::
+    HNil
+  ) ::
+  (Matze :: (...) :: HNil) ::
+  root-password.txt ::
+  HNil
+) ::
+HNil
 
 ```
 **Singleton Types**
