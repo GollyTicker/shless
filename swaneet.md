@@ -44,9 +44,8 @@ scala> reverse( ("abedc", 123) )
 scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
 41 :: 32 :: fdsfds :: HNil
 
-import shapeless.test.illTyped
-illTyped("reverse(true)")
-illTyped("reverse(Set(1,2,4))")
+reverse(true)   // compiliert nicht
+reverse(Set(1,2,4))   // compiliert nicht
 ```
 **Heterogenous lists**
 ```scala
@@ -82,9 +81,7 @@ val fileSystem =
   ) :: HNil
 
 scala> fileSystem.toZipper.right.down.get
-"Swaneet" ::
-("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
-HNil
+"Swaneet" :: ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil
 
 scala> fileSystem.toZipper.right.down.down.right.insert("plans.txt").root.reify
 "/" ::
@@ -114,8 +111,8 @@ res0: Int = 5
 scala> foo(0) + 6
 res0: Int = 11
 
-illTyped("foo(7)")
-illTyped("foo(1) + 2")
+foo(7)   // compiliert nicht
+foo(1) + 2   // compiliert nicht
 ```
 ```scala
 // Implementation
