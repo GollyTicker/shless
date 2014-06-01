@@ -41,7 +41,7 @@ object SingletonTypes {
     // wt0: Witness{type T = Int(0)}  // <- die 0 wurde hier mit in den Typen reingenommen.
 
     val wt1 = Witness(1)
-    // wt0: Witness{type T = Int(1)}
+    // wt1: Witness{type T = Int(1)}
 
     println("Witness(0): " + wt0) // SingletonTypes$$1$$1@17fa242
     println("Witness(1): " + wt1) // SingletonTypes$$3$$1@1a85286
