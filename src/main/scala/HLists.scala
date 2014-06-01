@@ -5,6 +5,7 @@
  */
 
 import shapeless._
+import shapeless.ops.hlist.Filter
 import shapeless.poly._
 
 object HLists {
@@ -93,38 +94,45 @@ object HLists {
     val doStuff = myBucket(0)
     println(doStuff(4)(5))
 
-    val divide:List[String] => (Int, String) = ls => { val t = ls.splitAt(2); ( t._1.length, t._2.mkString(":"))
+    // to HLsit and toList
 
-    val f = ???
-    val g = ???
+    trait All
+    case class A extends All
+    case class B extends All
 
-    val pairApply = ???
+    val some = A :: A :: B :: A :: B :: HNil
 
-    val merge = ???
-    val h = ???
+    val someList = List(A, A, B, A, B)
 
-    val compositional = divide :: pairApply :: merge :: h :: HNil
+    println(some + " with type " + some.getClass())
+    val general = some.
+    println(some + " with type " + some.getClass())
 
-    println(compositional)
-
+    // zipper?
     // reduce?
+    
+    // einfachere Type Classes(s. Beispiel Polymorphe funktionen!)
 
     println(secondList map onlyInt)
     println(unflat)
-
+    
+    // SINGLE TYPES noch dazu.
+    
+    // nicht so komplizierte Beispiele nehmen. (siehe /examples)
   }
 
 
   object ident extends (Id ~> Id) {
-    def apply[A](x:A) = x
+    def apply[A](x: A) = x
   }
 
   def hof() {
     val ls = 23 :: true :: "Hall" :: List(1,3,5,21) :: ("Hi",5) :: "Welt!" :: HNil
 
     println("ls: " + ls)
-    println("ident: " + ls map ident)
-    println("ident: " + ls map identity)
+    //println("ident: " + ls map ident)
+    //println("ident: " + ls map identity)
 
+    println("ls filter: " + (ls.filter[String]))
   }
 }
