@@ -72,10 +72,11 @@ object HLists {
     // Neue Datei in Swaneet erzeugen.
     println(s"Swaneet verändert: ${
       fileSystemOut.toZipper
-        .right.down // zeigt auf Ordner Swaneet
+        .right
+        .down // zeigt auf Ordner Swaneet
         .down // betritt Ordner Swaneet. Zeigt auf Ordnernamen "Swaneet"
         .right // Ordnerinhalte betreten. Zeigt auf das allersrte Element ("shapeless-präzi.tex")
-        .insert("airbnb-plans.txt") // neue Datei vorne hinzufügen
+        .insert("plans.txt") // neue Datei vorne hinzufügen
         .root.reify // zurück zum springen und Änderungen als neue HList zurückgeben
     }")
   }
@@ -114,7 +115,7 @@ object HLists {
   root contents: Swaneet :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil
   swaneet : Swaneet :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil
   matze contents: shapeless-präzi.keynote :: passwords.txt :: HNil
-  Swaneet verändert: / :: Swaneet :: airbnb-plans.txt :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil :: HNil
+  Swaneet verändert: / :: Swaneet :: plans.txt :: shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil :: HNil :: Matze :: shapeless-präzi.keynote :: passwords.txt :: HNil :: HNil :: root-password.txt :: HNil :: HNil
   */
 
 }

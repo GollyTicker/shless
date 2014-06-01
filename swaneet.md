@@ -86,10 +86,10 @@ scala> fileSystem.toZipper.right.down.get
 ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
 HNil
 
-scala> fileSystem.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
+scala> fileSystem.toZipper.right.down.down.right.insert("plans.txt").root.reify
 "/" ::
 (
-    ("Swaneet" :: ("airbnb-plans.txt" :: "shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil) ::
+    ("Swaneet" :: ("plans.txt" :: "shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil) ::
     ("Matze" :: ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) :: HNil ) ::
     "root-password.txt" ::
     HNil
