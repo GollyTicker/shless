@@ -13,24 +13,16 @@ object PolyFuncs {
   // hier nur ein kleines Beispiel wie man einfacher und verständlicher type-class artige Funktionen implementieren kann
 
   object reverse extends Poly1 {
-
     import Integer.parseInt
-
-    // reverse für Integers
     implicit def revInt = at[Int](x => parseInt(x.toString().reverse))
 
-    // reverse für Strings
     implicit def revString = at[String](_.reverse)
 
-    // reverse für Listen
-    implicit def revList[A](implicit revA: Given[A, A])
+    implicit def revList[A](implicit revA: Case.Aux[A, A])
     = at[List[A]](ls => (ls map (reverse(_)) reverse))
 
-    // reverse für Tupeln
-    implicit def revTuple[A, B](implicit revA: Given[A, A], revB: Given[B, B])
+    implicit def revTuple[A, B](implicit revA: Case.Aux[A, A], revB: Case.Aux[B, B])
     = at[(A, B)]{ case (a, b) => (reverse(b), reverse(a)) }
-
-    type Given[A, B] = Case.Aux[A, B]
   }
 
 
