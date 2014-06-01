@@ -51,7 +51,7 @@ illTyped("reverse(Set(1,2,4))")
 **Heterogenous lists**
 ```scala
 scala> myHlist = 23 :: "foo" :: true :: List('b', 'a', 'r') :: "BAR" :: HNil
-myHLsit: Int :: String :: Boolean :: List[Char] :: String :: HNil
+myHList: Int :: String :: Boolean :: List[Char] :: String :: HNil
 ```
 
 ```scala
@@ -72,27 +72,21 @@ scala> myHlist.filter[String]
 foo :: BAR :: HNil
 ```
 ```scala
-val swaneet =
-  "Swaneet" ::
-  ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
-  HNil
-
-val matze =
-  "Matze" ::
-  ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) ::
-  HNil
-
-val fileSystemOut =
+val fileSystem =
   "/" ::
-  (swaneet :: matze :: "root-password.txt" :: HNil) ::
-  HNil
+  (
+    ("Swaneet" :: ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil) ::
+    ("Matze" :: ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) :: HNil ) ::
+    "root-password.txt" ::
+    HNil
+  ) :: HNil
 
 scala> fileSystem.toZipper.right.down.get
 Swaneet ::
 (shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil) ::
 HNil
 
-scala> fileSystemOut.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
+scala> fileSystem.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
 / ::
 (
   ( 
@@ -117,6 +111,18 @@ scala> ls(1)
 res0: Int = 5
 ```
 ```scala
+// Examples
+scala> foo(1)
+res0: List[String] = List(ABC, DEF)
+scala> foo(0)
+res0: Int = 5
+scala> foo(0) + 6
+res0: Int = 11
+
+illTyped("foo(7)")
+illTyped("foo(1) + 2")
+```
+```scala
 // Implementation
 scala> val wt0 = Witness(0)
 wt0: Witness{type T = Int(0)}
@@ -132,18 +138,6 @@ implicit val ap1 =
 
 def foo(wt: WitnessWith[Foo]): wt.Out =
   wt.instance.out.asInstanceOf[wt.Out]
-```
-```scala
-// Examples
-scala> foo(1)
-res0: List[String] = List(ABC, DEF)
-scala> foo(0)
-res0: Int = 5
-scala> foo(0) + 6
-res0: Int = 11
-
-illTyped("foo(7)")
-illTyped("foo(1) + 2")
 ```
 **Extensible Records**
 ```scala
