@@ -4,7 +4,6 @@
  * Created by Swaneet on 17.05.2014.
  */
 
-import scala.util.Try
 import shapeless._
 
 object HLists {
@@ -23,7 +22,7 @@ object HLists {
     // variable lengths, but same type
 
     // Hlsits combine both
-    val myHlist = 23 :: "foo" :: true :: List('b, 'a', 'r') :: "BAR" :: HNil
+    val myHlist = 23 :: "foo" :: true :: List('b', 'a', 'r') :: "BAR" :: HNil
     //  myHLsit is  Int :: String :: Boolean  :: List[Char]         :: String :: HNil
 
     println(s"myHlist: ${myHlist}")
@@ -41,22 +40,7 @@ object HLists {
     println(s"myHlist.tail: $after23")
     println(s"myHlist.filter[String]: ${myHlist.filter[String]}")
 
-    // Hlisten sind geeignet um alles dort rein zu tun.
-
-    val plus: Int => Int => Int = x => (x + _)
-    val mult: Int => Int => Int = x => (x * _)
-
-    val bucket =
-      plus ::
-        mult ::
-        "234" ::
-        List("strawberry", "cherry", "chocolate", "nut") ::
-        HNil
-
-    val doStuff = bucket(0)
-    println(s"doStuff(4)(5): ${doStuff(4)(5)}")
-    println(s"ingredients: ${bucket(3)}")
-
+    // Hlisten sind buckets. Man kann dort alles reintun was man will.
 
     // Und man kann über Hlisten wandern
     // Beispielshaft hier ein Filesystem
@@ -89,7 +73,7 @@ object HLists {
     println(s"Swaneet verändert: ${
       fileSystemOut.toZipper
         .right.down // zeigt auf Ordner Swaneet
-        .down // betritt Ordndr Swaneet. Zeigt auf Ordnernamen "Swaneet"
+        .down // betritt Ordner Swaneet. Zeigt auf Ordnernamen "Swaneet"
         .right // Ordnerinhalte betreten. Zeigt auf das allersrte Element ("shapeless-präzi.tex")
         .insert("airbnb-plans.txt") // neue Datei vorne hinzufügen
         .root.reify // zurück zum springen und Änderungen als neue HList zurückgeben
