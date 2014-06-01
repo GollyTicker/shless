@@ -87,18 +87,13 @@ Swaneet ::
 HNil
 
 scala> fileSystem.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
-/ ::
+"/" ::
 (
-  ( 
-    Swaneet ::
-    (airbnb-plans.txt :: shapeless-präzi.tex ...) ::
+    ("Swaneet" :: ("airbnb-plans.txt" :: "shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil) ::
+    ("Matze" :: ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) :: HNil ) ::
+    "root-password.txt" ::
     HNil
-  ) ::
-  (Matze :: (...) :: HNil) ::
-  root-password.txt ::
-  HNil
-) ::
-HNil
+) :: HNil
 
 ```
 **Singleton Types**
