@@ -70,47 +70,58 @@ object HLists {
 
 
     // Und man kann über Hlisten wandern
-
-
     // Beispielshaft hier ein Filesystem
     // EIn Element im FS ist entweder ein File oder ein Folder.
 
     val fileSystem = fileSystemOut
 
     println("FileSystem: " + fileSystem)
-    // Folder(/)(Folder(Swaneet)(File(shapeless-präzi.tex) :: File(todo.txt) :: File(launchMissiles.hs) :: HNil) :: Folder(Matthias)(File(shapeless-präzi.keynote) :: File(passwords.txt) :: Folder(private)(File(permission.err) :: HNil) :: HNil) :: Folder(system)(File(google-master-plan.secret) :: File(Happy-families-are-all-alike.txt) :: File(Every-unhappy-family-is-unhappy-in-its-own-way.txt) :: HNil) :: HNil)
 
     import syntax.zipper._
 
     println(s"root Zipper: ${fileSystem.toZipper}")
 
     println(s"root: ${fileSystem.toZipper.get}")  // der Foldername "/"
-    println(s"root contents: ${fileSystem.toZipper.last}")
+    println(s"root contents: ${fileSystem.toZipper.right.get}") // mit einem Right können wir uns die HList zurückgeben lassen
+
+    // mit einem down gehen wir automatisch in das allererste Folder rein
+    println(s"swaneet : ${fileSystem.toZipper.right.down.get}")
+
+    println(s"matze contents: ${fileSystem.toZipper
+                                      .right.down // zeigt nun auf den Swaneet Ordner
+                                      .right  // nach rechts zu "Matthias navigieren"
+                                      .down // Ordner betreten. Zeiger zeigt nun auf den Ordnernamen "Matthias"
+                                      .right  // hol dir nun die Contents des Ordners
+                                      .get}")
 
     // Neue Datei in Swaneet erzeugen.
-    println(s"swaneet: ${ls}")
+    println(s"Swaneet verändert: ${
+      fileSystemOut.toZipper
+                                      .right.down // zeigt auf Ordner Swaneet
+                                      .down   // betritt Ordndr Swaneet. Zeigt auf Ordnernamen "Swaneet"
+                                      .right  // Ordnerinhalte betreten. Zeigt auf das allersrte Element ("shapeless-präzi.tex")
+                                      .insert("airbnb-plans.txt")  // neue Datei vorne hinzufügen
+                                      .root.reify // zurück zum springen und Änderungen als neue HList zurückgeben
+    }")
   }
 
-  // Alles ist einfach eine HList
-  // Eine Datei: "dateiname.txt" :: HNil
+  // Eine Datei: "dateiname.txt"
   // Mehrere Dateien: "dateiname.txt" :: "dateiname2.txt" :: HNil
-  // Ein Folder: "foldername" :: ("dateiname.txt" :: "dateiname2.txt" :: HNil) :: HNil
+  // Ein Folder: ("foldername", ("dateiname.txt" :: "dateiname2.txt" :: HNil))
 
-  def folder(x:String)(ls:HList) = x :: ls :: HNil
+  val swaneet =
+    "Swaneet" ::
+      ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
+      HNil
 
+  val matze =
+    "Matze" ::
+      ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) ::
+    HNil
 
   val fileSystemOut =
-    folder("/")(
-      folder("Swaneet")(
-        "shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil
-      ) ::
-      folder("Matze")(
-        "shapeless-präzi.keynote" :: "passwords.txt" :: HNil
-      ) ::
-      "Happy-families-are-all-alike.txt" ::
-      "Every-unhappy-family-is-unhappy-in-its-own-way.txt" ::
-      HNil
-    )
-  import syntax.zipper._
-  val ls = fileSystemOut.toZipper.put("sdfsdf")
+    "/" ::
+    (swaneet :: matze :: "root-password.txt" :: HNil) ::
+    HNil
+
 }
