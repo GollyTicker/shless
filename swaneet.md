@@ -11,10 +11,42 @@ by Matthias Nitsche and Swaneet Sahoo <br><br>
  5. Generics and Labelled Generics
  6. Lenses and Coproducts
 <br>
-<br>
+
 **Polymorphic Function Values**
 ```scala
-Some(None)
+// Implementation
+object reverse extends Poly1 {
+  import Integer.parseInt
+  implicit def revInt = at[Int](x => parseInt(x.toString().reverse))
+  
+  implicit def revString = at[String](_.reverse)
+
+  implicit def revList[A](implicit revA: Case.Aux[A, A])
+    = at[List[A]](ls => (ls map (reverse(_)) reverse))
+  
+  implicit def revTuple[A, B]
+    (implicit revA: Case.Aux[A, A], revB: Case.Aux[B, B])
+    = at[(A, B)]{ case (a, b) => (reverse(b), reverse(a)) }
+  }
+```
+```scala
+// Beispiele
+scala> reverse(324)
+423
+scala> reverse("12345")
+54321
+scala> reverse(List(2, 3, 5, 63))
+List(36, 5, 3, 2)
+scala> reverse(List("2", "3", "5", "63"))
+List(36, 5, 3, 2)
+scala> reverse( ("abedc", 123) )
+(321,cdeba)
+scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
+41 :: 32 :: fdsfds :: HNil
+
+import shapeless.test.illTyped
+illTyped("reverse(true)")
+illTyped("reverse(Set(1,2,4))")
 ```
 **Heterogenous lists**
 ```scala
@@ -77,7 +109,41 @@ HNil
 ```
 **Singleton Types**
 ```scala
-Some(None)
+val ls = "Hallo" :: 5 :: true :: HNil
+
+scala> ls(0)
+res0: String = Hallo
+scala> ls(1)
+res0: Int = 5
+```
+```scala
+// Implementation
+scala> val wt0 = Witness(0)
+wt0: Witness{type T = Int(0)}
+
+scala> val wt1 = Witness(1)
+wt1: Witness{type T = Int(1)}
+
+trait Foo[In] {type Out; def out: Out}
+implicit val ap0 =
+  new Foo[wt0.T] {type Out = Int; val out = 5 }
+implicit val ap1 =
+  new Foo[wt1.T] {type Out = List[String]; val out = List("ABC","DEF") }
+
+def foo(wt: WitnessWith[Foo]): wt.Out =
+  wt.instance.out.asInstanceOf[wt.Out]
+```
+```scala
+// Examples
+scala> foo(1)
+res0: List[String] = List(ABC, DEF)
+scala> foo(0)
+res0: Int = 5
+scala> foo(0) + 6
+res0: Int = 11
+
+illTyped("foo(7)")
+illTyped("foo(1) + 2")
 ```
 **Extensible Records**
 ```scala
