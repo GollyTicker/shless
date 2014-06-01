@@ -55,30 +55,33 @@ object SingletonTypes {
     // trait welches von allen Eingabesingletons unterstüzt werden soll
     trait Foo[In] {
       type Out
-      def out:Out
+
+      def out: Out
     }
-    implicit val ap0 = new Foo[wt0.T] { // bei 0 soll 5 rauskommen
+    implicit val ap0 = new Foo[wt0.T] {
+      // bei 0 soll 5 rauskommen
       type Out = Int
       val out = 5
     }
-    implicit val ap1 = new Foo[wt1.T] { // bei 1 soll List("ABC","DEF") rauskommen
+    implicit val ap1 = new Foo[wt1.T] {
+      // bei 1 soll List("ABC","DEF") rauskommen
       type Out = List[String]
-      val out = List("ABC","DEF")
+      val out = List("ABC", "DEF")
     }
 
-    def foo(wt:WitnessWith[Foo]):wt.Out = wt.instance.out.asInstanceOf[wt.Out]
+    def foo(wt: WitnessWith[Foo]): wt.Out = wt.instance.out.asInstanceOf[wt.Out]
 
-    println("foo(1): " + foo(1))  // List(ABC, DEF)
-    println("foo(0): " + foo(0))  // 5
+    println("foo(1): " + foo(1)) // List(ABC, DEF)
+    println("foo(0): " + foo(0)) // 5
 
     import shapeless.test.illTyped
     // compiliert nciht. 7 wurde nie registriert.
-    illTyped { "foo(7)" }
+    illTyped("foo(7)")
 
-    val res:Int = foo(0) + 2  // Integer kommt und Addition funktioniert
-    println( "foo(0) + 2: " + res ) // 7
+    val res: Int = foo(0) + 2 // Integer kommt und Addition funktioniert
+    println("foo(0) + 2: " + res) // 7
 
-    illTyped { "foo(1) + 2" } // bei 1 kommt aber eine Liste. Entsprechend compiliert das hier nicht
+    illTyped("foo(1) + 2") // bei 1 kommt aber eine Liste. Entsprechend compiliert das hier nicht
 
     // Mit diesem Trick ist 'foo' nun eine Funktion die bereits zur Kompilezeit
     // ihr Argument kennt um damit auch wieder zur Compilezeit zu reagieren und untershciedliche
@@ -92,7 +95,7 @@ object SingletonTypes {
   // nicht in die Präsi:
 
   // Dies kann man insbesondere daran erkennen, dass man foo kein beliebiges Argument übergeben kann.
-  illTyped { "def bar(x:Int) = foo(x)" }
+  illTyped("def bar(x:Int) = foo(x)")
   //  Error:(83, 26) Expression x does not evaluate to a constant or a stable value
   //    def bar(x:Int) = foo(x)
   //                         ^
