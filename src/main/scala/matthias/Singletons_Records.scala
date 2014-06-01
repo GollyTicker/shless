@@ -1,30 +1,23 @@
-Shapeless Features
-==================
-by Matthias Nitsche and Swaneet Sahoo <br><br>
+package matthias
 
-**Table of content**
+import shapeless.{syntax, HNil}
+import shapeless.record._
+import syntax.singleton._
 
- 1. Heterogenous lists, HTuple HMaps
- 2. Polymorphic Function Values
- 3. Singletons and Extensible Records
- 4. Generics and Labelled Generics
- 5. Lenses and Coproducts
-<br>
-<br>
-**Heterogenous lists, HTuple HMaps**
-```scala
-Some(None)
-```
-**Polymorphic Function Values**
-```scala
-Some(None)
-```
-**Singletons**
-```scala
-Some(None)
-```
-**Extensible Records**
-```scala
+/**
+ * Created by sacry on 30/05/14.
+ */
+
+
+class Singletons_Records {
+
+}
+
+object SingletonsExample extends App {
+
+}
+
+
 object RecordExample extends App {
 
   def printTitle(msg: String) = {
@@ -79,12 +72,3 @@ object RecordExample extends App {
   val removeFields = addFields map (p => p - "inPrint")
   printRecord(removeFields)
 }
-```
-**Generics and Labelled Generics**
-```scala
-Some(None)
-```
-**Lenses and Coproducts**
-```scala
-Some(None)
-```

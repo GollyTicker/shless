@@ -11,19 +11,19 @@ import shapeless.poly._
 object HLists {
 
   // HLsits (Tuples x Lists = HLists)
-    // HOF examples
-      // filter, map, flatten, take
-      // get, head, tail
-      // lifting functions
-      // actually these are natural transformations
-      // reduce and fold
+  // HOF examples
+  // filter, map, flatten, take
+  // get, head, tail
+  // lifting functions
+  // actually these are natural transformations
+  // reduce and fold
   // UseCase
   // Extension zu HMaps and HTuples
 
 
 
   val nestedHlist = {
-      /*1st Element*/ (45 :: true :: HNil)               ::
+    /*1st Element*/ (45 :: true :: HNil)               ::
       /*2nd Element*/ ("Hallo" :: "Welt" :: 'c' :: HNil) ::
       /*3rd Element*/ Set(1,3,6)                         ::
       /*4th Element*/ List(true, false)                  ::
@@ -55,7 +55,7 @@ object HLists {
     val hiFive = ("Hi", 5)
     // fixed length, variable types
     val book = ("Benjamin Pierce", "Types and Programming Languages", Euro(42.23), true)
-                // author           title                             price        availible
+    // author           title                             price        availible
 
 
     // and there are lists
@@ -85,11 +85,11 @@ object HLists {
     val plus:Int => Int => Int = x => (x + _)
     val mult:Int => Int => Int = x => (x * _)
     val myBucket =
-            plus ::
-            mult ::
-            "234" ::
-            List("strawberry", "cherry", "chocolate", "nut") ::
-            HNil
+      plus ::
+        mult ::
+        "234" ::
+        List("strawberry", "cherry", "chocolate", "nut") ::
+        HNil
 
     val doStuff = myBucket(0)
     println(doStuff(4)(5))
@@ -105,19 +105,19 @@ object HLists {
     val someList = List(A, A, B, A, B)
 
     println(some + " with type " + some.getClass())
-    val general = some.
-    println(some + " with type " + some.getClass())
+    val general = some.toList
+      println(some + " with type " + some.getClass())
 
     // zipper?
     // reduce?
-    
+
     // einfachere Type Classes(s. Beispiel Polymorphe funktionen!)
 
     println(secondList map onlyInt)
     println(unflat)
-    
+
     // SINGLE TYPES noch dazu.
-    
+
     // nicht so komplizierte Beispiele nehmen. (siehe /examples)
   }
 

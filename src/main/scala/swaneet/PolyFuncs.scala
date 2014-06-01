@@ -1,3 +1,5 @@
+package swaneet
+
 import shapeless._
 import shapeless.poly._
 
