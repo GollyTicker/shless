@@ -10,17 +10,6 @@ import shapeless.poly._
 
 object HLists {
 
-  // HLsits (Tuples x Lists = HLists)
-  // HOF examples
-  // filter, map, flatten, take
-  // get, head, tail
-  // lifting functions
-  // actually these are natural transformations
-  // reduce and fold
-  // UseCase
-  // Extension zu HMaps and HTuples
-
-
   case class Euro(pr: Double)
 
   case class NatoShip
@@ -85,26 +74,16 @@ object HLists {
 
     // Beispielshaft hier ein Filesystem
     type File = String
-    type Folder[F <: HList] = (String, F)
+    type Folder = (String, HList)
     // EIn Element im FS ist entweder ein File oder ein Folder.
 
-    val fileSystem = ???
-      /*Folder("/")(
-        Folder("Swaneet")(
-          File("shapeless-präzi.tex") :: File("todo.txt") :: File("launchMissiles.hs") :: HNil
-        ) ::
-        Folder("Matthias")(
-          File("shapeless-präzi.keynote") :: File("passwords.txt") ::
-            Folder("private")(File("permission.err"):: HNil) :: HNil
-        ) ::
-        Folder("system")(
-          File("google-master-plan.secret") ::
-          File("Happy-families-are-all-alike.txt") ::
-          File("Every-unhappy-family-is-unhappy-in-its-own-way.txt") ::
-          HNil
-        ) ::
-        HNil
-      )*/
+    import shapeless.BasisConstraint._
+    type FileSystem = File :: Folder :: HNil
+    def acceptBasis[L <: HList : Basis[FileSystem]#λ](l : L) = true
+
+    val fileSystem = fileSystemOut
+
+    acceptBasis(fileSystem)
 
     println(fileSystem)
     // Folder(/)(Folder(Swaneet)(File(shapeless-präzi.tex) :: File(todo.txt) :: File(launchMissiles.hs) :: HNil) :: Folder(Matthias)(File(shapeless-präzi.keynote) :: File(passwords.txt) :: Folder(private)(File(permission.err) :: HNil) :: HNil) :: Folder(system)(File(google-master-plan.secret) :: File(Happy-families-are-all-alike.txt) :: File(Every-unhappy-family-is-unhappy-in-its-own-way.txt) :: HNil) :: HNil)
@@ -119,4 +98,25 @@ object HLists {
 
     println(fs)
   }
+  val fileSystemOut =
+    ("/",
+      "Swaneet" :: "Matze" :: "system" :: HNil
+      )
+  /*Folder("/")(
+    Folder("Swaneet")(
+      File("shapeless-präzi.tex") :: File("todo.txt") :: File("launchMissiles.hs") :: HNil
+    ) ::
+    Folder("Matthias")(
+      File("shapeless-präzi.keynote") :: File("passwords.txt") ::
+        Folder("private")(File("permission.err"):: HNil) :: HNil
+    ) ::
+    Folder("system")(
+      File("google-master-plan.secret") ::
+      File("Happy-families-are-all-alike.txt") ::
+      File("Every-unhappy-family-is-unhappy-in-its-own-way.txt") ::
+      HNil
+    ) ::
+    HNil
+  )*/
+
 }
