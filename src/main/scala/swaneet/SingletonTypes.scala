@@ -32,14 +32,8 @@ object SingletonTypes {
 
     // Wie kann denn scala zur Compilezeit schon das Argument wissen?
 
-    // -> Singleton Types
-
     // Man muss den Wert mit in den Typen integrieren!
-    // das machen SingletonTypes:
-    val zero = 0
-    // zero: Int
-    val zeroSingleton = 0.narrow
-    // zeroSingleton: Int(0)
+    // Das machen SingletonTypes.
 
     // Ein Witness ist ein Objekt welches in seinem Typen nicht nur
     // den Typen des Wertes, sondern den Wert selber kennt!
@@ -55,7 +49,6 @@ object SingletonTypes {
     // trait welches von allen Eingabesingletons unterstüzt werden soll
     trait Foo[In] {
       type Out
-
       def out: Out
     }
     implicit val ap0 = new Foo[wt0.T] {
@@ -93,6 +86,11 @@ object SingletonTypes {
   }
 
   // nicht in die Präsi:
+
+  val zero = 0
+  // zero: Int
+  val zeroSingleton = 0.narrow
+  // zeroSingleton: Int(0)
 
   // Dies kann man insbesondere daran erkennen, dass man foo kein beliebiges Argument übergeben kann.
   illTyped("def bar(x:Int) = foo(x)")
