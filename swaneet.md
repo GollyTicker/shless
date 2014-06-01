@@ -82,8 +82,8 @@ val fileSystem =
   ) :: HNil
 
 scala> fileSystem.toZipper.right.down.get
-Swaneet ::
-(shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil) ::
+"Swaneet" ::
+("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
 HNil
 
 scala> fileSystem.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
