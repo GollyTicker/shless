@@ -9,16 +9,11 @@ import syntax.singleton._
  */
 
 
-class Singletons_Records {
+class ExtensibleRecords {
 
 }
 
-object SingletonsExample extends App {
-
-}
-
-
-object RecordExample extends App {
+object ExtensibleRecordsExample extends App {
 
   def printTitle(msg: String) = {
     println(s"\n${"-" * 10} ${msg} ${"-" * 10}")
