@@ -4,8 +4,8 @@
  * Created by Swaneet on 17.05.2014.
  */
 
+import scala.util.Try
 import shapeless._
-import shapeless.ops.hlist.Filter
 import shapeless.poly._
 
 object HLists {
@@ -21,30 +21,11 @@ object HLists {
   // Extension zu HMaps and HTuples
 
 
+  case class Euro(pr: Double)
 
-  val nestedHlist = {
-    /*1st Element*/ (45 :: true :: HNil)               ::
-      /*2nd Element*/ ("Hallo" :: "Welt" :: 'c' :: HNil) ::
-      /*3rd Element*/ Set(1,3,6)                         ::
-      /*4th Element*/ List(true, false)                  ::
-      /*5th Element*/ HNil
-  }
-
-  val unflat = (23 :: "foo" :: 54 :: HNil) :: HNil :: (-2 :: true :: 12 ::  HNil) :: HNil
-
-  val blubb = (23 :: "foo" :: HNil) :: HNil :: (true :: HNil) :: HNil
-
-  val flatten = unflat flatMap identity
-
-  val secondList = 23 :: "dvf" :: 24 :: true :: ("Hi", 5) :: 7 :: List("dvf","vfde") :: HNil
-
-  object onlyInt extends Poly1 {
-    implicit def caseInt                = at[Int](x => true)
-    implicit def caseElse[A]            = at[A](x => false)
-  }
-
-  case class Euro(pr:Double)
   case class NatoShip
+
+  def launchMissiles(x: String) = ()
 
   def apply() = {
 
@@ -57,82 +38,85 @@ object HLists {
     val book = ("Benjamin Pierce", "Types and Programming Languages", Euro(42.23), true)
     // author           title                             price        availible
 
-
     // and there are lists
     val ingredients = List("strawberry", "cherry", "chocolate", "nut")
-
-    val nato_ships_in_this_room:List[NatoShip] = List()
-
-    val arthimetics:List[(Int, Int) => Int] = List( (_+_), (_-_), (_*_), (_/_) )
+    val nato_ships_in_this_room: List[NatoShip] = List()
+    val arthimetics: List[(Int, Int) => Int] = List((_ + _), (_ - _), (_ * _), (_ / _))
     // variable lengths, but same type
 
     // Hlsits combine both
+    val myHlist = 23 :: "foo" :: true :: List('b, 'a', 'r') :: "BAR" :: HNil
+    //  myHLsit is  Int :: String :: Boolean  :: List[Char]       :: String :: HNil
+    println("myHlist: " + myHlist)
 
-    val myHlist =   23  :: "foo"  :: true     :: List('b,'a','r') :: HNil
-    //  myHLsit is  Int :: String :: Boolean  :: List[Char]       :: HNil
-    println(myHlist)
+    // Tuple like access
+    println("myHlist(0): " + myHlist(0))
+    println("myHlist(2): " + myHlist(2))
 
-    // List operations
-    println(myHlist(0))
-    println(myHlist(2))
+    // list like operations
     val after23 = myHlist.tail
-    println(after23)
+    println("myHlist.tail: " + after23)
+    println("myHlist.filter[String]: " + (myHlist.filter[String]))
 
     // der Typ bleibt erhalten
     val res = if (myHlist(0) < 26 && myHlist(2)) myHlist(1) else "baz"
-    println(res)
+    println("Conditional: " + res)
 
-    val plus:Int => Int => Int = x => (x + _)
-    val mult:Int => Int => Int = x => (x * _)
-    val myBucket =
+    // Hlisten sind geeignet um alles dort rein zu tun.
+
+    val plus: Int => Int => Int = x => (x + _)
+    val mult: Int => Int => Int = x => (x * _)
+
+    val bucket =
       plus ::
         mult ::
         "234" ::
         List("strawberry", "cherry", "chocolate", "nut") ::
+        Try(launchMissiles("5min")) ::
         HNil
 
-    val doStuff = myBucket(0)
-    println(doStuff(4)(5))
-
-    // to HLsit and toList
-
-    trait All
-    case class A extends All
-    case class B extends All
-
-    val some = A :: A :: B :: A :: B :: HNil
-
-    val someList = List(A, A, B, A, B)
-
-    println(some + " with type " + some.getClass())
-    val general = some.toList
-      println(some + " with type " + some.getClass())
-
-    // zipper?
-    // reduce?
-
-    // einfachere Type Classes(s. Beispiel Polymorphe funktionen!)
-
-    println(secondList map onlyInt)
-    println(unflat)
-
-    // SINGLE TYPES noch dazu.
-
-    // nicht so komplizierte Beispiele nehmen. (siehe /examples)
-  }
+    val doStuff = bucket(0)
+    println("doStuff(4)(5): " + doStuff(4)(5))
+    println(bucket(4))
 
 
-  object ident extends (Id ~> Id) {
-    def apply[A](x: A) = x
-  }
+    // Und man kann über Hlisten wandern
 
-  def hof() {
-    val ls = 23 :: true :: "Hall" :: List(1,3,5,21) :: ("Hi",5) :: "Welt!" :: HNil
 
-    println("ls: " + ls)
-    //println("ident: " + ls map ident)
-    //println("ident: " + ls map identity)
+    // Beispielshaft hier ein Filesystem
+    type File = String
+    type Folder[F <: HList] = (String, F)
+    // EIn Element im FS ist entweder ein File oder ein Folder.
 
-    println("ls filter: " + (ls.filter[String]))
+    val fileSystem = ???
+      /*Folder("/")(
+        Folder("Swaneet")(
+          File("shapeless-präzi.tex") :: File("todo.txt") :: File("launchMissiles.hs") :: HNil
+        ) ::
+        Folder("Matthias")(
+          File("shapeless-präzi.keynote") :: File("passwords.txt") ::
+            Folder("private")(File("permission.err"):: HNil) :: HNil
+        ) ::
+        Folder("system")(
+          File("google-master-plan.secret") ::
+          File("Happy-families-are-all-alike.txt") ::
+          File("Every-unhappy-family-is-unhappy-in-its-own-way.txt") ::
+          HNil
+        ) ::
+        HNil
+      )*/
+
+    println(fileSystem)
+    // Folder(/)(Folder(Swaneet)(File(shapeless-präzi.tex) :: File(todo.txt) :: File(launchMissiles.hs) :: HNil) :: Folder(Matthias)(File(shapeless-präzi.keynote) :: File(passwords.txt) :: Folder(private)(File(permission.err) :: HNil) :: HNil) :: Folder(system)(File(google-master-plan.secret) :: File(Happy-families-are-all-alike.txt) :: File(Every-unhappy-family-is-unhappy-in-its-own-way.txt) :: HNil) :: HNil)
+
+    import syntax.zipper._
+
+    // val z = fileSystem.toZipper
+
+    // println(fsGen.to(fileSystem))
+
+    val fs = ("sdf" :: "sdfsdf" :: HNil) :: "asfd" :: HNil
+
+    println(fs)
   }
 }
