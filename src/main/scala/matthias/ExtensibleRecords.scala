@@ -1,6 +1,6 @@
 package matthias
 
-import shapeless.{syntax, HNil}
+import shapeless.{HList, syntax, HNil}
 import shapeless.record._
 import syntax.singleton._
 
@@ -58,7 +58,6 @@ object ExtensibleRecordsExample extends App {
   println(removeField)
 
   printTitle("add a field from all records")
-
   val addFields = extended map (p => p + ("inPrint" ->> true))
   printRecord(addFields)
 
@@ -66,4 +65,14 @@ object ExtensibleRecordsExample extends App {
 
   val removeFields = addFields map (p => p - "inPrint")
   printRecord(removeFields)
+
+  val pricierItems = books.map(i => i + ("price" ->> i("price") * 2.0))
+  printRecord(pricierItems)
+
+  printTitle("w00t")
+  val removeAuthorAddLastname = books.map(book => book
+    + ("lastname" ->> book("author").split("\\s+")(1))
+    - "author"
+  )
+  removeAuthorAddLastname foreach println
 }
