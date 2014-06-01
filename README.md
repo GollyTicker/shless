@@ -146,7 +146,7 @@ val aBook = Book("MrGeneric", "About Types", 262162, 44.11)
 
 val res = bookGen.to(aBook) // HList with Records/Labels
 
-res(''price) // 44.11
+res('price) // 44.11
 
 bookGen.from(res.updateWith('price)(_ + 2.0))
 // Book(MrGeneric, About Types, 262162, 46.11)
@@ -214,12 +214,12 @@ strs.select[(String, Int)] // Some(("foo", 3))
 val bools = bool map size
 bools.select[(Boolean, Int)] // Some((true, 1))
 
-val uSchema = RecordType.like(''i ->> 23 :: ''s ->> "foo" :: ''b ->> true :: HNil)
+val uSchema = RecordType.like('i ->> 23 :: 's ->> "foo" :: 'b ->> true :: HNil)
 type U = uSchema.Union
-val u = Coproduct[U](''s ->> "foo")
+val u = Coproduct[U]('s ->> "foo")
 
-u.get(''i) // None
-u.get(''s) // Some("foo")
+u.get('i) // None
+u.get('s) // Some("foo")
 
 ---- Lenses ----
 case class Address(street: String, city: String, postcode: String)
@@ -232,12 +232,12 @@ case class Person(name: String, age: Int, address: Address, job: Job)
 
 val streetLens = lens[Person].address.street // two ways of access
 val cityLens = lens[Person].address.city // this and..
-val postcodeLens = lens[Person] >> ''address >> ''postcode // ..that
+val postcodeLens = lens[Person] >> 'address >> 'postcode // ..that
 
-val jobLens = lens[Person] >> ''job
-val jobNameLens = lens[Person] >> ''job >> ''name
-val hourlyLens = lens[Person] >> ''job >> ''salary >> ''hourly
-val bonusLens = lens[Person] >> ''job >> ''salary >> ''bonus
+val jobLens = lens[Person] >> 'job
+val jobNameLens = lens[Person] >> 'job >> 'name
+val hourlyLens = lens[Person] >> 'job >> 'salary >> 'hourly
+val bonusLens = lens[Person] >> 'job >> 'salary >> 'bonus
 val salaryLens = hourlyLens ~ bonusLens // Composition
 
 val john = Person("John", 25,
