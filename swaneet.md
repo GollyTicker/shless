@@ -14,7 +14,16 @@ by Matthias Nitsche and Swaneet Sahoo <br><br>
 
 **Polymorphic Function Values**
 ```scala
-// Implementation
+// Higher Rank Functions
+object choose extends (List ~> Option) {
+  def apply[A](s : List[A]) = s.headOption
+}
+
+scala> choose(List(1, 2, 3))
+res0: Option[Int] = Some(1)
+```
+```scala
+// constrainted polymorphic function - Implementation
 object reverse extends Poly1 {
   import Integer.parseInt
   implicit def revInt = at[Int](x => parseInt(x.toString().reverse))
@@ -30,7 +39,7 @@ object reverse extends Poly1 {
   }
 ```
 ```scala
-// Beispiele
+// constrainted polymorphic function - Beispiele
 scala> reverse(324)
 423
 scala> reverse("12345")
@@ -41,8 +50,6 @@ scala> reverse(List("2", "3", "5", "63"))
 List(36, 5, 3, 2)
 scala> reverse( ("abedc", 123) )
 (321,cdeba)
-scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
-41 :: 32 :: fdsfds :: HNil
 
 reverse(true)   // compiliert nicht
 reverse(Set(1,2,4))   // compiliert nicht
@@ -67,6 +74,8 @@ res0: String = foo
 // List like operations
 scala> myHlist.tail
 foo :: true :: List(b, a, r) :: BAR :: HNil
+scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
+41 :: 32 :: fdsfds :: HNil
 scala> myHlist.filter[String]
 foo :: BAR :: HNil
 ```
