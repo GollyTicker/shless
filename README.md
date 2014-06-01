@@ -11,7 +11,7 @@ by Matthias Nitsche and Swaneet Sahoo <br><br>
  5. Generics and Labelled Generics
  6. Lenses and Coproducts
 <br>
-<br>
+
 **Polymorphic Function Values**
 ```scala
 Some(None)
@@ -148,10 +148,10 @@ val res = bookGen.to(aBook) // HList with Records/Labels
 
 res(''price) // 44.11
 
-bookGen.from(res.updateWith(''price)(_ + 2.0))
+bookGen.from(res.updateWith('price)(_ + 2.0))
 // Book(MrGeneric, About Types, 262162, 46.11)
 
-val extBook = bookExtGen.from(res + (''inPrint ->> true)) 
+val extBook = bookExtGen.from(res + ('inPrint ->> true)) 
 // Book to ExtendedBook with update
   
 ------ Everywhere -----
