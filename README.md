@@ -188,9 +188,6 @@ personGen.to(john) // HList
 
 val another_john = "John" :: "Doe" :: 25 :: Address("695 Park Ave", "New York, NY", "10065") :: "Software Engineer" :: HNil
 
-object inc extends ->((i: Int) => i + 1)
-everywhere(inc)(john) // john.age = 26
-
 personGen.from(another_john) // Person
 personGen.from(another_john) == personGen.from(personGen.to(john)) // True
 
@@ -273,13 +270,6 @@ strs.select[(String, Int)] // Some(("foo", 3))
 
 val bools = bool map size
 bools.select[(Boolean, Int)] // Some((true, 1))
-
-val uSchema = RecordType.like('i ->> 23 :: 's ->> "foo" :: 'b ->> true :: HNil)
-type U = uSchema.Union
-val u = Coproduct[U]('s ->> "foo")
-
-u.get('i) // None
-u.get('s) // Some("foo")
 
 ---- Lenses ----
 case class Address(street: String, city: String, postcode: String)
