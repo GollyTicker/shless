@@ -14,7 +14,16 @@ by Matthias Nitsche and Swaneet Sahoo <br><br>
 
 **Polymorphic Function Values**
 ```scala
-// Implementation
+// Higher Rank Functions
+object choose extends (List ~> Option) {
+  def apply[A](s : List[A]) = s.headOption
+}
+
+scala> choose(List(1, 2, 3))
+res0: Option[Int] = Some(1)
+```
+```scala
+// constrainted polymorphic function - Implementation
 object reverse extends Poly1 {
   import Integer.parseInt
   implicit def revInt = at[Int](x => parseInt(x.toString().reverse))
@@ -30,7 +39,7 @@ object reverse extends Poly1 {
   }
 ```
 ```scala
-// Beispiele
+// constrainted polymorphic function - Beispiele
 scala> reverse(324)
 423
 scala> reverse("12345")
@@ -41,17 +50,14 @@ scala> reverse(List("2", "3", "5", "63"))
 List(36, 5, 3, 2)
 scala> reverse( ("abedc", 123) )
 (321,cdeba)
-scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
-41 :: 32 :: fdsfds :: HNil
 
-import shapeless.test.illTyped
-illTyped("reverse(true)")
-illTyped("reverse(Set(1,2,4))")
+reverse(true)   // compiliert nicht
+reverse(Set(1,2,4))   // compiliert nicht
 ```
 **Heterogenous lists**
 ```scala
 scala> myHlist = 23 :: "foo" :: true :: List('b', 'a', 'r') :: "BAR" :: HNil
-myHLsit: Int :: String :: Boolean :: List[Char] :: String :: HNil
+myHList: Int :: String :: Boolean :: List[Char] :: String :: HNil
 ```
 
 ```scala
@@ -68,50 +74,72 @@ res0: String = foo
 // List like operations
 scala> myHlist.tail
 foo :: true :: List(b, a, r) :: BAR :: HNil
+scala> (14 :: 23 :: "sdfsdf" :: HNil) map reverse
+41 :: 32 :: fdsfds :: HNil
 scala> myHlist.filter[String]
 foo :: BAR :: HNil
 ```
 ```scala
-val swaneet =
-  "Swaneet" ::
-  ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) ::
-  HNil
-
-val matze =
-  "Matze" ::
-  ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) ::
-  HNil
-
-val fileSystemOut =
+val fileSystem =
   "/" ::
-  (swaneet :: matze :: "root-password.txt" :: HNil) ::
-  HNil
+  (
+    ("Swaneet" :: ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil) ::
+    ("Matze" :: ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) :: HNil ) ::
+    "root-password.txt" ::
+    HNil
+  ) :: HNil
 
 scala> fileSystem.toZipper.right.down.get
-Swaneet ::
-(shapeless-präzi.tex :: todo.txt :: launchMissiles.hs :: HNil) ::
-HNil
+"Swaneet" :: ("shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil
 
-scala> fileSystemOut.toZipper.right.down.down.right.insert("airbnb-plans.txt").root.reify
-/ ::
+scala> fileSystem.toZipper.right.down.down.right.insert("plans.txt").root.reify
+"/" ::
 (
-  ( 
-    Swaneet ::
-    (airbnb-plans.txt :: shapeless-präzi.tex ...) ::
+    ("Swaneet" :: ("plans.txt" :: "shapeless-präzi.tex" :: "todo.txt" :: "launchMissiles.hs" :: HNil) :: HNil) ::
+    ("Matze" :: ("shapeless-präzi.keynote" :: "passwords.txt" :: HNil) :: HNil ) ::
+    "root-password.txt" ::
     HNil
-  ) ::
-  (Matze :: (...) :: HNil) ::
-  root-password.txt ::
-  HNil
-) ::
-HNil
+) :: HNil
 
 ```
 **Singleton Types**
 ```scala
-Some(None)
-```
+val ls = "Hallo" :: 5 :: true :: HNil
 
+scala> ls(0)
+res0: String = Hallo
+scala> ls(1)
+res0: Int = 5
+```
+```scala
+// Examples
+scala> foo(1)
+res0: List[String] = List(ABC, DEF)
+scala> foo(0)
+res0: Int = 5
+scala> foo(0) + 6
+res0: Int = 11
+
+foo(7)   // compiliert nicht
+foo(1) + 2   // compiliert nicht
+```
+```scala
+// Implementation
+scala> val wt0 = Witness(0)
+wt0: Witness{type T = Int(0)}
+
+scala> val wt1 = Witness(1)
+wt1: Witness{type T = Int(1)}
+
+trait Foo[In] {type Out; def out: Out}
+implicit val ap0 =
+  new Foo[wt0.T] {type Out = Int; val out = 5 }
+implicit val ap1 =
+  new Foo[wt1.T] {type Out = List[String]; val out = List("ABC","DEF") }
+
+def foo(wt: WitnessWith[Foo]): wt.Out =
+  wt.instance.out.asInstanceOf[wt.Out]
+```
 **Extensible Records**
 ```scala
 case class Book(id: Int, title: String, author: String, price: Double)
