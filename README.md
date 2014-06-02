@@ -142,15 +142,14 @@ def foo(wt: WitnessWith[Foo]): wt.Out =
 ```
 **Extensible Records**
 ```scala
-case class Book(id: Int, title: String, author: String, price: Double)
+case class Book(title: String, author: String, price: Double)
 
 val books = List(
-"id" ->> 262162091 :: "title" ->> "Types and Programming Languages" ::
-  "author" ->> "Benjamin Pierce" :: "price" ->> 44.95 :: HNil,
-"id" ->> 262162092 :: "title" ->> "Love Type n Stuff - Peace!" ::
-  "author" ->> "Peter Peace" :: "price" ->> 104.11 :: HNil,
-"id" ->> 262162093 :: "title" ->> "The Tragedy of Scala and Java" ::
-  "author" ->> "Java Scalaspeare" :: "price" ->> 12.12 :: HNil
+  "title" ->> "Types and Programming Languages" ::
+    "author" ->> "Benjamin Pierce" :: "price" ->> 44.95 :: HNil, 
+  
+  "title" ->> "The Tragedy of Scala and Java" ::
+    "author" ->> "Java Scalaspeare" :: "price" ->> 12.12 :: HNil
 ) // List[HList[records.Fields]]
 
 val oldPrice = books(1).get("price") // 104.11
@@ -171,25 +170,24 @@ val pricierItems = books.map(i => i + ("price" ->> i("price")*2.0))
 val removeAuthorAddLastname = books.map(book => book 
   + ("lastname" ->> book("author").split("\\s+")(1))
   - "author"
-) // add the last name of the author and remove the author field
+) // add the last name of the author (by splitting the author field) and remove the author field
 ```
 **Generics and Labelled Generics**
 ```scala
 ------ Generics -----
-case class Person(fn: String, ln: String, age: Int, address: Address, job: String)
+case class Person(name: String, address: Address, job: String)
 
 case class Address(street: String, city: String, postcode: String)
 
 val personGen = Generic[Person]
 
-val john = Person("John", "Doe", 25, Address("695 Park Ave", "New York, NY", "10065"), "Software Engineer")
+val john = Person("John", Address("695 Park Ave", "New York, NY", "10065"), "Software Engineer")
 
-personGen.to(john) // HList
+scala> personGen.to(john)
+res = "John" :: Address("695 Park Ave", "New York, NY", "10065") :: "Software Engineer" :: HNil
 
-val another_john = "John" :: "Doe" :: 25 :: Address("695 Park Ave", "New York, NY", "10065") :: "Software Engineer" :: HNil
-
-personGen.from(another_john) // Person
-personGen.from(another_john) == personGen.from(personGen.to(john)) // True
+scala> personGen.from(res) // Person
+scala> personGen.from(res) == personGen.from(personGen.to(john)) // True
 
 ------ Labelled Generics -----
 case class Book(author: String, title: String, id: Int, price: Double)
@@ -272,27 +270,17 @@ val bools = bool map size
 bools.select[(Boolean, Int)] // Some((true, 1))
 
 ---- Lenses ----
-case class Address(street: String, city: String, postcode: String)
-
-case class Salary(hourly: Int, bonus: Int = 0)
+case class Salary(hourly: Int, bonus: Int)
 
 case class Job(name: String, salary: Salary)
 
-case class Person(name: String, age: Int, address: Address, job: Job)
+case class Person(name: String, job: Job)
 
-val streetLens = lens[Person].address.street // two ways of access
-val cityLens = lens[Person].address.city // this and..
-val postcodeLens = lens[Person] >> 'address >> 'postcode // ..that
-
-val jobLens = lens[Person] >> 'job
-val jobNameLens = lens[Person] >> 'job >> 'name
-val hourlyLens = lens[Person] >> 'job >> 'salary >> 'hourly
+val hourlyLens = lens[Person].job.salary.hourly // two ways of access
 val bonusLens = lens[Person] >> 'job >> 'salary >> 'bonus
 val salaryLens = hourlyLens ~ bonusLens // Composition
 
-val john = Person("John", 25,
-Address("695 Park Ave", "New York, NY", "10065"),
-Job("Software Engineer", Salary(30)))
+val john = Person("John", Job("Software Engineer", Salary(30, 0)))
 
 val newJohn = hourlyLens.set(john)(100)
 hourlyLens.get(newJohn) // hourly payment = 100
@@ -300,5 +288,5 @@ hourlyLens.modify(newJohn)(_ + 5) // hourly payment = 105
 
 val (hourly, bonus) = salaryLens.get(newJohn)
 val anotherJohn = salaryLens.set(newJohn)(100, 50) 
-// anotherJohn with Salary(100, 50)
+// Person("John", Job("Software Engineer", Salary(100, 50)))
 ```
