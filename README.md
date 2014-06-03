@@ -65,7 +65,7 @@ myHList: Int :: String :: Boolean :: List[Char] :: String :: HNil
 scala> myHlist(0)
 res0: Int = 23
 scala> myHlist(1)
-res0: String = 23
+res0: String = "foo"
 
 // Tuple like types
 scala> if (myHlist(0) < 26 && myHlist(2)) myHlist(1) else "baz"
