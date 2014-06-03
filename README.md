@@ -131,12 +131,23 @@ wt0: Witness{type T = Int(0)}
 scala> val wt1 = Witness(1)
 wt1: Witness{type T = Int(1)}
 
-trait Foo[In] {type Out; def out: Out}
-implicit val ap0 =
-  new Foo[wt0.T] {type Out = Int; val out = 5 }
-implicit val ap1 =
-  new Foo[wt1.T] {type Out = List[String]; val out = List("ABC","DEF") }
+trait Foo[In] {
+    type Out
+    def out: Out
+}
 
+implicit val ap0 =
+  new Foo[wt0.T] {
+      type Out = Int
+      val out = 5
+}
+
+implicit val ap1 =
+  new Foo[wt1.T] {
+  type Out = List[String]
+  val out = List("ABC","DEF")
+}
+  
 def foo(wt: WitnessWith[Foo]): wt.Out =
   wt.instance.out.asInstanceOf[wt.Out]
 ```
@@ -200,6 +211,7 @@ val bookExtGen = LabelledGeneric[ExtendedBook]
 val aBook = Book("MrGeneric", "About Types", 262162, 44.11)
 
 val res = bookGen.to(aBook) // HList with Records/Labels
+// 'name ->> "MrGeneric" ::  'title ->> "About Types" :: 'id ->> 262162 :: 'price ->> 44.11 :: HNil
 
 res('price) // 44.11
 
